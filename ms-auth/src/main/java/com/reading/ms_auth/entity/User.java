@@ -2,10 +2,7 @@ package com.reading.ms_auth.entity;
 
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.EqualsAndHashCode;
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -22,15 +19,8 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotEmpty(message = "Defina um name de usuário!")
-    private String username;
-
-    @NotEmpty(message = "O email é obrigatório!")
-    @Email(message = "Escreva um email válido!")
     private String email;
 
-    @NotEmpty(message = "Defina uma password.")
-    @Size(min = 8, message = "A password deve ter no mínimo 8 números")
     @Column(name = "password_hash")
     private String password;
 
@@ -38,11 +28,9 @@ public class User {
     @CreationTimestamp
     private Timestamp creationDate;
 
-    @NotEmpty(message = "Digite seu nome!")
     private String name;
 
     @Column(name = "birth_date")
-    @NotNull(message = "Digite sua data de aniversário.")
     private LocalDate birthDate;
 
 
@@ -53,14 +41,6 @@ public class User {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
     }
 
     public String getEmail() {
@@ -83,9 +63,6 @@ public class User {
         return creationDate;
     }
 
-    public void setCreationDate(Timestamp creationDate) {
-        this.creationDate = creationDate;
-    }
 
     public String getName() {
         return name;
@@ -103,12 +80,11 @@ public class User {
         this.birthDate = birthDate;
     }
 
-    public User(Long id, String username, String email, String password, Timestamp dataCriacao, String name, LocalDate birthDate) {
+    public User(Long id, String email, String password, Timestamp creationDate, String name, LocalDate birthDate) {
         this.id = id;
-        this.username = username;
         this.email = email;
         this.password = password;
-        this.creationDate = dataCriacao;
+        this.creationDate = creationDate;
         this.name = name;
         this.birthDate = birthDate;
     }
