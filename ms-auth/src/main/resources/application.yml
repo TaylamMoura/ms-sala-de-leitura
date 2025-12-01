@@ -1,0 +1,58 @@
+server:
+  port: 8081
+
+# ===============================================
+# CONFIGURAÇÃO SPRING (Geral e BD)
+# ===============================================
+spring:
+  application:
+    name: ms-auth
+
+  cloud:
+    consul:
+      host: localhost
+      port: 8500
+      discovery:
+        health-check-path: /actuator/health
+        health-check-interval: 15s
+        prefer-ip-address: true
+        register-health-check: true
+
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/ms_sala_auth
+    username: user_ms
+    password: mssala
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+
+# ===============================================
+# CONFIGURAÇÃO DE SEGURANÇA E ACTUATOR
+# ===============================================
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health # Expor /actuator/health para o Consul
+
+jwt:
+  secret: ${JWT_SECRET}
+
+# CONFIGURAÇÃO DO EUREKA CLIENT (Desabilitado)
+eureka:
+  client:
+    enabled: false # Desabilita a tentativa de registro no Eureka
+
+auth:
+  service:
+    name: ms-auth
+    path: /usuarios

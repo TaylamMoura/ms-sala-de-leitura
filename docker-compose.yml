@@ -1,0 +1,90 @@
+version: '3.8'
+
+services:
+  # 1. Banco de Dados PostgreSQL (Infraestrutura Principal)
+  postgres-db:
+    image: postgres:15-alpine
+    container_name: postgres-db
+    environment:
+      #  Credenciais lidas do .env para a criação inicial do BD
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB_AUTH} # O Docker cria apenas o DB do Auth na inicialização
+
+    ports:
+      - "5432:5432" # Expõe a porta para o MS-Auth rodando no IntelliJ
+    volumes:
+      - postgres_data:/var/lib/postgresql/data # Persistência
+    restart: always
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-U", "${POSTGRES_USER}" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 60s
+    deploy: # Otimização de recursos (para o seu PC)
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 1G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
+
+  # 2. COnsul Server (Infraestrutura Principal)
+  consul-server:
+    image: consul:1.15.4 # Imagem oficial, não precisa de código local
+    container_name: consul-server
+    command: "agent -server -bootstrap -ui -node=server1 -client=0.0.0.0"
+    ports:
+      - "8500:8500" # Porta da API e UI do Consul
+    restart: always
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0' # Mantemos o limite para evitar sobrecarga
+          memory: 350m
+        reservations:
+          cpus: '0.5'
+          memory: 256m
+
+
+  # 3. MS de Autenticação (Apenas para garantir que o Docker Compose saiba que ele existe)
+  # Este serviço NÃO será iniciado aqui; ele será iniciado no IntelliJ.
+  ms-auth:
+    build:
+      context: ./ms-auth
+      dockerfile: Dockerfile
+    container_name: ms-auth
+    ports:
+      - "8081:8081"
+    # Adicione dependências temporárias para que o Maven Wrapper funcione globalmente
+    # (Não rodaremos este contêiner, mas ele é útil para a compilação)
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-db:5432/ms_sala_auth
+
+  # 4. MS do Catálogo (Não será iniciado agora)
+  ms-catalog:
+    build:
+      context: ./ms-catalog
+      dockerfile: Dockerfile
+    container_name: ms-catalog
+
+  # 5. MS das Sessões (Não será iniciado agora)
+  ms-sessions:
+    build:
+      context: ./ms-sessions
+      dockerfile: Dockerfile
+    container_name: ms-sessions
+
+  # 6. API Gateway (Não será iniciado agora)
+  ms-gateway:
+    build:
+      context: ./ms-gateway
+      dockerfile: Dockerfile
+    container_name: ms-gateway
+    ports:
+      - "8000:8000"
+
+volumes:
+  postgres_data:
