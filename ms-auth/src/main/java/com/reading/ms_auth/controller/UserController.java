@@ -2,7 +2,7 @@ package com.reading.ms_auth.controller;
 
 import com.reading.ms_auth.dto.UserRegisterDTO;
 import com.reading.ms_auth.dto.UserLoginDTO;
-import com.reading.ms_auth.dto.UsernameResponseDTO;
+import com.reading.ms_auth.dto.NameResponseDTO;
 import com.reading.ms_auth.entity.User;
 import com.reading.ms_auth.security.JwtService;
 import com.reading.ms_auth.service.UserService;
@@ -34,7 +34,7 @@ public class UserController {
     @PostMapping
     public ResponseEntity<?> createUser(@Valid @RequestBody UserRegisterDTO cadastroDTO){
         User novoUser = userService.registerUser(cadastroDTO);
-        return ResponseEntity.status(HttpStatus.CREATED).body(new UsernameResponseDTO(novoUser));
+        return ResponseEntity.status(HttpStatus.CREATED).body(new NameResponseDTO(novoUser));
     }
 
     @PostMapping("/login")
