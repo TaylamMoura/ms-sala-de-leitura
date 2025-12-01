@@ -24,9 +24,9 @@ public class JwtService {
     }
 
     //GERA O TOKEN
-    public String generateToken(String username) {
+    public String generateToken(String email) {
         return Jwts.builder()
-                .setSubject(username)
+                .setSubject(email)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 7)) // 7 horas de validade
                 .signWith(getSigningKey(), SignatureAlgorithm.HS512)
