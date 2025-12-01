@@ -22,24 +22,12 @@ public class UserService {
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
 
-    @Value("${jwt.secret}")
-    private String secretKey;
 
     public UserService(UserRepository userRepository, BCryptPasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
-    public String generateToken(String email) {
-        Key key = Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
-
-        return Jwts.builder()
-                .setSubject(email)
-                .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60)) // 1 hora de validade
-                .signWith(key, SignatureAlgorithm.HS512)
-                .compact();
-    }
 
     @Transactional
     public User registerUser(UserRegisterDTO registerDTO) {
@@ -47,7 +35,6 @@ public class UserService {
         user.setName(registerDTO.name());
         user.setBirthDate(registerDTO.birthDate());
         user.setEmail(registerDTO.email());
-        user.setUsername(registerDTO.username());
         user.setPassword(passwordEncoder.encode(registerDTO.password()));
 
         return userRepository.save(user);
