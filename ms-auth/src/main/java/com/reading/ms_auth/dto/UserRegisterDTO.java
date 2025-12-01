@@ -1,32 +1,23 @@
 package com.reading.ms_auth.dto;
 
 import com.reading.ms_auth.entity.User;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 
 import java.time.LocalDate;
 
+//Para entrada de dados
 public record UserRegisterDTO(
-        @NotEmpty
+        @NotBlank(message = "Digite seu nome!")
         String name,
 
-        @NotNull
+        @NotNull(message = "Digite sua data de aniversário.")
         LocalDate birthDate,
 
-        @NotEmpty
-        String username,
-
-        @NotEmpty
-        @Email
+        @NotBlank(message = "O email é obrigatório!")
+        @Email(message = "Escreva um email válido!")
         String email,
 
-        @NotEmpty
-        @Size(min = 8, message = "A password deve ter no mínimo 8 números")
+        @NotBlank(message = "Defina uma senha.")
+        @Size(min = 8, message = "A senha deve ter no mínimo 8 caracteres")
         String password
-) {
-    public UserRegisterDTO(User user){
-        this(user.getName(), user.getBirthDate(), user.getUsername(), user.getEmail(), user.getPassword());
-    }
-}
+) { }
