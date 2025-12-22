@@ -8,10 +8,10 @@ import java.util.List;
 import java.util.Optional;
 
 public interface BookRepository extends JpaRepository<Book, Long> {
-    List<Book> findByUsuario(Usuario usuario);
+    List<Book> findByUserId(Long userId);
 
-    Optional<Book> findByIdAndUsuario(Long id, Usuario usuario);
+    Optional<Book> findByIdAndUserId(Long id, Long userId);
 
-    List<Book> findByUsuarioAndLivroFinalizadoTrue(Usuario usuario);
+    List<Book> findByUserIdAndFinishedTrue(Long userId);
 
 }
