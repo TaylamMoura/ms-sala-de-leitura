@@ -12,11 +12,11 @@ import java.net.URL;
 public class APIConnection {
 
     @Value("${google.api.key}")
-    private static String API_KEY ;
+    private String apiKey;
     private static final String BASE_URL = "https://www.googleapis.com/books/v1/volumes?q=";
 
     public String booksJson(String query) throws Exception {
-        String apiUrl = BASE_URL + query + "&key=" + API_KEY;
+        String apiUrl = BASE_URL + query + "&key=" + apiKey;
         URL url = new URL(apiUrl);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("GET");
