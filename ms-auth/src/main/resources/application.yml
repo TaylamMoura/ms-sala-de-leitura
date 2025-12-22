@@ -18,11 +18,13 @@ spring:
         prefer-ip-address: true
         register-health-check: true
 
-
   datasource:
-    url: jdbc:postgresql://localhost:5432/ms_sala_auth
-    username: user_ms
-    password: mssala
+    #url: jdbc:postgresql://localhost:5432/ms_auth
+    #username: user_ms
+    #password: mssala
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD_POSTGRES}
     driver-class-name: org.postgresql.Driver
 
   jpa:
@@ -35,14 +37,11 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
 
 
-# ===============================================
-# CONFIGURAÇÃO DE SEGURANÇA E ACTUATOR
-# ===============================================
 management:
   endpoints:
     web:
       exposure:
-        include: health # Expor /actuator/health para o Consul
+        include: health
 
 jwt:
   secret: ${JWT_SECRET}
