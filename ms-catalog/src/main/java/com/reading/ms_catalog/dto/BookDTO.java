@@ -9,10 +9,10 @@ public record BookDTO(
         int pages,
         String coverUrl,
         int publicationYear,
-        int currentPage,
-        boolean finished) {
+        boolean finished,
+        String country) {
 
-    public BookDTO(Book book, int currentPage) {
+    public BookDTO(Book book) {
         this(
                 book.getId(),
                 book.getTitle(),
@@ -20,10 +20,8 @@ public record BookDTO(
                 book.getPages(),
                 book.getCoverUrl(),
                 book.getPublicationYear(),
-                currentPage,
-                book.getFinished());
+                book.getFinished(),
+                book.getCountry());
     }
-    public BookDTO(Book book){
-        this(book, 0);
-    }
+
 }
