@@ -37,16 +37,29 @@ public class Book {
     @Column(name = "finished", nullable = false)
     private Boolean finished = false;
 
-    @Column(name = "origin_country")
-    private String originCountry;
+    @Column(name = "country")
+    private String country;
 
     public void update(BookUpdate date) {
-        if(date.pages() != 0){
+        if(date.title() != null && !date.title().isBlank()){
+            this.title = date.title();
+        }
+
+        if(date.author() != null && !date.author().isBlank()){
+            this.author = date.author();
+        }
+
+
+        if(date.pages() > 0){
             this.pages = date.pages();
         }
 
         if (date.publicationYear() != 0 && String.valueOf(date.publicationYear()).length() <= 4){
             this.publicationYear = date.publicationYear();
+        }
+
+        if (date.country() != null && !date.country().isBlank()){
+            this.country = date.country();
         }
     }
 }
