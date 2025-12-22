@@ -77,16 +77,23 @@ public class UserController {
         }
     }
 
-    @PostMapping("/validate-token")
-    public ResponseEntity<?> validateToken(@RequestHeader("Authorization") String token) {
+    @GetMapping("/validate-token")
+    public ResponseEntity<Long> validateToken(@RequestHeader("Authorization") String token) {
         try {
-            Claims claims = jwtService.validateToken(token.replace("Bearer ", ""));
+            String jwt = token.replace("Bearer ", "");
+
+            Claims claims = jwtService.validateToken(jwt);
             String email = claims.getSubject();
-            return ResponseEntity.ok("Token válido para o email: " + email);
+
+            User user = userService.findUserByEmail(email);
+
+            return ResponseEntity.ok(user.getId());
+
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Token inválido ou expirado");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
     }
+
 }
 
 //para colocar mensagens no status, usa-se <?> ao inves de <Usuario>
