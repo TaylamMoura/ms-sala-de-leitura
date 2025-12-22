@@ -37,6 +37,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authz -> authz
                         .requestMatchers(EndpointRequest.to("health")).permitAll()
                         .requestMatchers("/actuator/health").permitAll()
+                        .requestMatchers("/usuarios/validate-token").permitAll()
                         .requestMatchers(
                                 "/usuarios",
                                 "/usuarios/login",
