@@ -1,17 +1,14 @@
 package com.reading.ms_catalog.controller;
-package com.reading.sala_de_leitura.controller;
 
 
 import com.reading.ms_catalog.dto.BookDTO;
-import com.reading.ms_catalog.dto.UsuarioRetornoDTO;
 import com.reading.ms_catalog.entity.Book;
-import com.reading.ms_catalog.entity.SessoesDeLeitura;
-import com.reading.ms_catalog.entity.Usuario;
 import com.reading.ms_catalog.repository.BookRepository;
-import com.reading.ms_catalog.repository.SessoesRepository;
+import com.reading.ms_catalog.service.AuthClientService;
 import com.reading.ms_catalog.service.BookUpdate;
 import com.reading.ms_catalog.service.BookService;
-import com.reading.ms_catalog.service.UsuarioService;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,21 +24,25 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@RequestMapping("/livros")
 public class BookController {
 
     private final BookService bookService;
     private final BookRepository bookRepository;
+    private final AuthClientService authClientService;
+    //private final SessionsClientService sessionsClientService;
 
     @Autowired
-    public BookController(BookService service, BookRepository bookRepository) {
+    public BookController(BookService service, BookRepository bookRepository, AuthClientService authClientService /*SessionsClientService sessionsClientService*/) {
         this.bookService = service;
         this.bookRepository = bookRepository;
+        this.authClientService = authClientService;
+        //this.sessionsClientService = sessionsClientService;
     }
 
 
     @GetMapping("/pesquisarLivro")
     public BookDTO searchBook(@RequestParam String title) {
-
         return bookService.searchByTitle(title);
     }
 
@@ -50,39 +51,33 @@ public class BookController {
     @PostMapping("/salvarLivro")
     public ResponseEntity<BookDTO> saveBook(@RequestBody BookDTO bookDTO, Authentication authentication) {
 
-        String emailLogado = authentication.getName();
-        Usuario usuarioLogado = usuarioService.buscarPorEmail(emailLogado);
+       Long userId = getUserFromAuth(authentication);
 
         if (bookDTO.title() == null || bookDTO.title().trim().isEmpty()) {
             throw new ValidationException("Título do livro não pode estar vazio.");
         }
 
-        bookService.saveBook(bookDTO, usuarioLogado);
-        return ResponseEntity.ok(bookDTO);
+        bookService.saveBook(bookDTO, userId);
+        return ResponseEntity.status(HttpStatus.CREATED).body(bookDTO);
     }
 
 
     //Exibir na Página Inicial
     @GetMapping("/livrosSalvos")
     public List<BookDTO> listBooks(Authentication authentication) {
-        String email = authentication.getName();
-        Usuario usarioLogado = usuarioService.buscarPorEmail(email);
-        return bookService.listSavedBooks(usarioLogado);
+        Long userId = getUserFromAuth(authentication);
+        return bookService.listSavedBooks(userId);
     }
 
 
     @GetMapping("/exibirDados/{id}")
     public ResponseEntity<BookDTO> getDetailsBooks(@PathVariable Long id, Authentication authentication){
-        Usuario usuarioLogado = usuarioService.buscarPorEmail(authentication.getName());
+        Long userId = getUserFromAuth(authentication);
 
-        Book book = bookRepository.findByIdAndUsuario(id, usuarioLogado)
+        Book book = bookRepository.findByIdAndUserId(id, userId)
                 .orElseThrow(() -> new ValidationException("Livro não encontrado"));
 
-        int paginaAtual = sessoesRepository.findTopByUsuarioIdAndLivroIdOrderByFimSessaoDesc(usuarioLogado.getId(), book.getId())
-                .map(SessoesDeLeitura::getPaginaFinal)
-                .orElse(0);
-
-        BookDTO bookDTO = new BookDTO(book, paginaAtual);
+        BookDTO bookDTO = new BookDTO(book);
 
         return ResponseEntity.ok(bookDTO);
     }
@@ -90,17 +85,21 @@ public class BookController {
     @Transactional
     @DeleteMapping("/excluirLivro/{id}")
     public ResponseEntity<Void> deleteBook(@PathVariable Long id, Authentication authentication) {
-        Usuario usuarioLogado = usuarioService.buscarPorEmail(authentication.getName());
-        bookService.deleteBook(id, usuarioLogado);
+
+        Long userId = getUserFromAuth(authentication);
+
+        bookService.deleteBook(id, userId);
+
         return ResponseEntity.ok().build();
     }
 
 
     @Transactional
     @PutMapping("/editarLivro/{id}")
-    public ResponseEntity<BookDTO> updateBook(@PathVariable Long id, @RequestBody BookUpdate atualizarDados, Authentication authentication) {
-        Usuario usuarioLogado = usuarioService.buscarPorEmail(authentication.getName());
-        Book bookToUpdate = bookService.updateBook(id, atualizarDados, usuarioLogado);
+    public ResponseEntity<BookDTO> updateBook(@PathVariable Long id, @RequestBody BookUpdate updateBook, Authentication authentication) {
+        Long userId = getUserFromAuth(authentication);
+
+        Book bookToUpdate = bookService.updateBook(id, updateBook, userId);
         BookDTO bookDTO = new BookDTO(
                 bookToUpdate.getId(),
                 bookToUpdate.getTitle(),
@@ -108,8 +107,8 @@ public class BookController {
                 bookToUpdate.getPages(),
                 bookToUpdate.getCoverUrl(),
                 bookToUpdate.getPublicationYear(),
-                0,
-                bookToUpdate.getFinished()
+                bookToUpdate.getFinished(),
+                bookToUpdate.getCountry()
         );
         return ResponseEntity.ok(bookDTO);
     }
@@ -131,7 +130,7 @@ public class BookController {
     }
 
     //exibir nome de usuario no front
-    @GetMapping("/usuario-logado")
+    /*@GetMapping("/usuario-logado")
     public ResponseEntity<UsuarioRetornoDTO> obterUsuarioLogado(Authentication authentication) {
         try {
             String emailLogado = authentication.getName();
@@ -142,5 +141,29 @@ public class BookController {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
+    }*/
+
+    //Método para obter o JWT do cookie
+    private String extractJwtFromCookie(HttpServletRequest request){
+        if (request.getCookies() != null){
+            for (Cookie cookie : request.getCookies()){
+                if ("jwt".equals(cookie.getName())){
+                    return cookie.getValue();
+                }
+            }
+        }
+        throw new ValidationException("JWT não encontrado no cookie");
+    }
+
+    //Método para obter Id de user
+    private Long getUserFromAuth(Authentication authentication) {
+
+        Long userId = (Long) authentication.getPrincipal();
+
+
+        if (userId == null){
+            throw new ValidationException("Usuário não encontrado");
+        }
+        return userId;
     }
 }
