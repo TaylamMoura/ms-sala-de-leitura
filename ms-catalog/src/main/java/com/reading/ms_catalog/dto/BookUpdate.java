@@ -1,4 +1,4 @@
-package com.reading.ms_catalog.service;
+package com.reading.ms_catalog.dto;
 
 public record BookUpdate(
         Long id,
