@@ -1,0 +1,55 @@
+package com.reading.ms_sessions.repository;
+
+
+import com.reading.ms_sessions.entity.ReadingSession;
+import com.reading.ms_sessions.dto.BookRankingDTO;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
+import java.util.Optional;
+import java.util.List;
+
+@Repository
+public interface StatisticsRepository extends JpaRepository<ReadingSession, Long> {
+
+    // Calcula quantos dias levou para finalizar o livro
+    @Query(value = "SELECT COALESCE(TIMESTAMPDIFF(DAY, MIN(s.start_time), MAX(s.end_time)), 0) " +
+            "FROM reading_sessions s WHERE s.book_id = :bookId", nativeQuery = true)
+    Optional<Integer> calculateDaysToFinishBook(@Param("bookId") Long bookId);
+
+    // Calcula a média de páginas lidas por dia, evitando divisão por zero
+    @Query(value = "SELECT COALESCE(SUM(s.end_page - s.start_page) / NULLIF(TIMESTAMPDIFF(DAY, MIN(s.start_time), MAX(s.end_time)), 0), 0) " +
+            "FROM reading_sessions s WHERE s.book_id = :bookId", nativeQuery = true)
+    Optional<Double> calculateAveragePagesPerDay(@Param("bookId") Long bookId);
+
+    // Calcula a média de tempo das sessões de leitura
+    @Query(value = "SELECT COALESCE(AVG(s.reading_time) / 3600, 0) FROM reading_sessions s WHERE s.book_id = :bookId", nativeQuery = true)
+    Optional<Double> calculateAverageSessionTime(@Param("bookId") Long bookId);
+
+    //Ranking com os 5 livros finalizados, definidos de modo aleatório
+    @Query(value = "SELECT l.id, l.title, l.author, l.cover_url " +
+            "FROM books l " +
+            "JOIN reading_sessions s ON s.book_id = l.id " +
+            "WHERE s.user_id = :userId " +
+            "AND s.finished = TRUE " +
+            "GROUP BY l.id, l.title, l.author, l.cover_url " +
+            "ORDER BY RAND() " +
+            "LIMIT 5",
+            nativeQuery = true)
+    List<BookRankingDTO> bookRanking(@Param("userId") Long userId);
+
+    //Retorna os segundos para ser convertido em Total de horas lidas no service -- evita erros de conversão no SQL
+    @Query(value = "SELECT SUM(reading_time) FROM reading_sessions", nativeQuery = true)
+    Long totalSecondsRead();
+
+
+    // Total de PÁGINAS lidas em todas as sessões
+    @Query("SELECT SUM(s.lastPage - s.startPage) FROM ReadingSession s")
+    int totalPagesRead();
+
+
+    //Total de livros lidos
+    @Query("SELECT COUNT(*) FROM Book b WHERE b.finished = TRUE")
+    int totalBooksRead();
+}
