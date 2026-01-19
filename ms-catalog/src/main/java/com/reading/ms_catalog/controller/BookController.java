@@ -5,7 +5,7 @@ import com.reading.ms_catalog.dto.BookDTO;
 import com.reading.ms_catalog.entity.Book;
 import com.reading.ms_catalog.repository.BookRepository;
 import com.reading.ms_catalog.service.AuthClientService;
-import com.reading.ms_catalog.service.BookUpdate;
+import com.reading.ms_catalog.dto.BookUpdate;
 import com.reading.ms_catalog.service.BookService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -111,6 +111,14 @@ public class BookController {
                 bookToUpdate.getCountry()
         );
         return ResponseEntity.ok(bookDTO);
+    }
+
+    //endpoint usado em ms-session
+    @PutMapping("/livros/{id}/finalizar")
+    public ResponseEntity<Void> markBookAsFinished(@PathVariable Long id, Authentication authentication){
+        Long userId = getUserFromAuth(authentication);
+        bookService.markAsFinished(id, userId);
+        return ResponseEntity.ok().build();
     }
 
 
