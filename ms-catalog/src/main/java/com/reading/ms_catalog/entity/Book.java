@@ -1,7 +1,7 @@
 package com.reading.ms_catalog.entity;
 
 
-import com.reading.ms_catalog.service.BookUpdate;
+import com.reading.ms_catalog.dto.BookUpdate;
 import jakarta.persistence.*;
 import lombok.*;
 
