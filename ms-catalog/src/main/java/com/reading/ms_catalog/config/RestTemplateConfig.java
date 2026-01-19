@@ -15,4 +15,5 @@ public class RestTemplateConfig {
     }
 }
 
-//classe para usar o nome do serviço em vez do host para comunicação.
+//A classe serve para criar um RestTemplate como Bean
+//RestTemplate envia solicitação HTTP para outros Ms
