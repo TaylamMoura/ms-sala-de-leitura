@@ -3,12 +3,12 @@ package com.reading.ms_catalog.service;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.reading.ms_catalog.dto.BookUpdate;
 import com.reading.ms_catalog.entity.Book;
 import com.reading.ms_catalog.repository.BookRepository;
 import com.reading.ms_catalog.dto.BookDTO;
 import jakarta.validation.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -113,6 +113,15 @@ public class BookService {
         book.update(bookUpdate);
         repository.save(book);
         return book;
+    }
+
+    @Transactional
+    public void markAsFinished(Long id, Long userId){
+        Book book = repository.findByIdAndUserId(id, userId)
+                .orElseThrow(() -> new ValidationException("Livro não encontrado"));
+
+        book.setFinished(true);
+        repository.save(book);
     }
 
 
