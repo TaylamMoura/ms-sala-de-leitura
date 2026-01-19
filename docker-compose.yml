@@ -35,7 +35,7 @@ services:
   consul-server:
     image: consul:1.15.4 # Imagem oficial, não precisa de código local
     container_name: consul-server
-    command: "agent -server -bootstrap -ui -node=server1 -client=0.0.0.0"
+    command: agent -server -bootstrap-expect=1 -ui -node=server1 -client=0.0.0.0
     ports:
       - "8500:8500" # Porta da API e UI do Consul
     restart: always
