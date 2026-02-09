@@ -1,0 +1,46 @@
+server:
+  port: 8080   # Porta do Gateway
+
+spring:
+  application:
+    name: ms-gateway
+
+  main:
+    web-application-type: reactive
+
+  cloud:
+    consul:
+      host: localhost
+      port: 8500
+      discovery:
+        register: true
+        prefer-ip-address: true
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
+      routes:
+        - id: ms-auth
+          uri: lb://ms-auth
+          predicates:
+            - Path=/usuarios/**
+        - id: ms-catalog
+          uri: lb://ms-catalog
+          predicates:
+            - Path=/livros/**
+        - id: ms-sessions
+          uri: lb://ms-sessions
+          predicates:
+            - Path=/sessao-leitura/**
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+
+
+jwt:
+  secret: ${JWT_SECRET}
+
