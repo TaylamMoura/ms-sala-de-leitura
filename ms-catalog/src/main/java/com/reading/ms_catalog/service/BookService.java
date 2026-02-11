@@ -52,7 +52,7 @@ public class BookService {
                 int year = publishedDate != null ? Integer.parseInt(publishedDate.split("-")[0]) : 0;
                 String country = saleInfo != null && saleInfo.has("country") ? saleInfo.get("country").getAsString() : "N/A";
 
-                return new BookDTO(null, title, author, pageCount, thumbnail, year, false, country);
+                return new BookDTO(null, title, author, pageCount, thumbnail, year, false, country, null);
 
             } else {
                 System.out.println("Livro não encontrado. Tente outro título!");
@@ -97,18 +97,18 @@ public class BookService {
 
 
     @Transactional
-    public void deleteBook(Long id, Long userId){
-        Book book = repository.findByIdAndUserId(id, userId)
-                .orElseThrow(() -> new ValidationException("Livro não escontrado"));
+    public void deleteBook(Long bookId, Long userId){
+        Book book = repository.findByBookIdAndUserId(bookId, userId)
+                .orElseThrow(() -> new ValidationException("Livro não encontrado"));
 
         repository.delete(book);
     }
 
 
     @Transactional
-    public Book updateBook(Long id, BookUpdate bookUpdate, Long userId) {
-        Book book = repository.findByIdAndUserId(id, userId)
-                .orElseThrow(() -> new ValidationException("Livro não escontrado"));
+    public Book updateBook(Long bookId, BookUpdate bookUpdate, Long userId) {
+        Book book = repository.findByBookIdAndUserId(bookId, userId)
+                .orElseThrow(() -> new ValidationException("Livro não encontrado"));
 
         book.update(bookUpdate);
         repository.save(book);
@@ -116,8 +116,8 @@ public class BookService {
     }
 
     @Transactional
-    public void markAsFinished(Long id, Long userId){
-        Book book = repository.findByIdAndUserId(id, userId)
+    public void markAsFinished(Long bookId, Long userId){
+        Book book = repository.findByBookIdAndUserId(bookId, userId)
                 .orElseThrow(() -> new ValidationException("Livro não encontrado"));
 
         book.setFinished(true);
@@ -125,8 +125,8 @@ public class BookService {
     }
 
 
-    public BookDTO getBookDetails(Long id, Long userId) {
-        Book book = repository.findByIdAndUserId(id, userId)
+    public BookDTO getBookDetails(Long bookId, Long userId) {
+        Book book = repository.findByBookIdAndUserId(bookId, userId)
                 .orElseThrow(()-> new ValidationException("Livro não encontrado"));
         return  new BookDTO(book);
     }
