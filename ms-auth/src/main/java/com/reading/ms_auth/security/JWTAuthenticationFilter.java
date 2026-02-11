@@ -4,7 +4,6 @@ package com.reading.ms_auth.security;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -13,7 +12,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -37,29 +35,33 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
 
-        String token = null;
+        String token = extractToken(request);
 
-        //EXTRAI O TOKEN DOS COOKIES
-        if (request.getCookies() != null) {
-            for (Cookie cookie : request.getCookies()) {
-                if ("jwt".equals(cookie.getName())) {
-                    token = cookie.getValue();
-                    break;
-                }
-            }
-        }
-
-        //VALIDAÇÃO DO TOKEN E CONFIGURAÇÃO DA SEGURANÇA
-        if (token != null && jwtService.isTokenValid(token)) {
+        if (token != null && jwtService.isTokenValid(token)){
             Claims claims = jwtService.validateToken(token);
-            String email = claims.getSubject();
 
-            UsernamePasswordAuthenticationToken auth =
-                    new UsernamePasswordAuthenticationToken(email, null, Collections.emptyList());
+            Long userId = Long.valueOf(claims.getSubject());
 
+            UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
+                                                            userId,
+                                                            null,
+                                                            Collections.emptyList());
             SecurityContextHolder.getContext().setAuthentication(auth);
         }
+        filterChain.doFilter(request,response);
+    }
 
-        filterChain.doFilter(request, response);
+    private  String extractToken(HttpServletRequest request){
+        String header = request.getHeader("Authorization");
+        if (header != null && header.startsWith("Bearer ")){
+            return  header.substring(7);
+        }
+        return null;
+    }
+
+    @Override
+    protected  boolean shouldNotFilter (HttpServletRequest request){
+        String path = request.getRequestURI();
+        return PUBLIC_URLS.stream().anyMatch(path::contains);
     }
 }
