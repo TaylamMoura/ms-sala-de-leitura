@@ -10,18 +10,21 @@ public record BookDTO(
         String coverUrl,
         int publicationYear,
         boolean finished,
-        String country) {
+        String country,
+        Long userId) {
 
     public BookDTO(Book book) {
         this(
-                book.getId(),
+                book.getBookId(),
                 book.getTitle(),
                 book.getAuthor(),
                 book.getPages(),
                 book.getCoverUrl(),
                 book.getPublicationYear(),
                 book.getFinished(),
-                book.getCountry());
+                book.getCountry(),
+                book.getUserId()
+        );
     }
 
 }
