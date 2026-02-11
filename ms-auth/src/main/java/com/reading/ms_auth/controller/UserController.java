@@ -10,9 +10,7 @@ import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -44,19 +42,12 @@ public class UserController {
             boolean validCredentials = userService.validateCredentials(loginDTO.email(), loginDTO.password());
 
             if (validCredentials) {
-                String token = jwtService.generateToken(loginDTO.email());
+                User user = userService.findUserByEmail(loginDTO.email());
+                String token = jwtService.generateToken(user);
 
-                // Criação do cookie com o token
-                ResponseCookie cookie = ResponseCookie.from("jwt", token)
-                        .httpOnly(true)
-                        .secure(false)
-                        .path("/")
-                        .maxAge(3600)
-                        .build();
-                response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
 
                 // Busca o usuário pelo email
-                User user = userService.findUserByEmail(loginDTO.email());
+                //User user = userService.findUserByEmail(loginDTO.email());
 
                 // Retorna token + userId no corpo da resposta
                 Map<String, Object> responseBody = new HashMap<>();
@@ -83,11 +74,16 @@ public class UserController {
             String jwt = token.replace("Bearer ", "");
 
             Claims claims = jwtService.validateToken(jwt);
-            String email = claims.getSubject();
 
-            User user = userService.findUserByEmail(email);
+            Long userId = Long.valueOf(claims.getSubject());
 
-            return ResponseEntity.ok(user.getId());
+            //VER NECESSIDADE
+            String email = claims.get("email", String.class);
+
+            // String email = claims.getSubject();
+            //User user = userService.findUserByEmail(email);
+
+            return ResponseEntity.ok(userId);
 
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
