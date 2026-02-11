@@ -1,5 +1,6 @@
 package com.reading.ms_auth.security;
 
+import com.reading.ms_auth.entity.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
@@ -24,9 +25,10 @@ public class JwtService {
     }
 
     //GERA O TOKEN
-    public String generateToken(String email) {
+    public String generateToken(User user) {
         return Jwts.builder()
-                .setSubject(email)
+                .setSubject(user.getId().toString())
+                .claim("email", user.getEmail())
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 7)) // 7 horas de validade
                 .signWith(getSigningKey(), SignatureAlgorithm.HS512)
