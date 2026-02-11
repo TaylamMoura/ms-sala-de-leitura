@@ -1,6 +1,5 @@
 package com.reading.ms_sessions.dto;
 
-import java.awt.print.Book;
 
 public record BookDTO(
         Long id,
