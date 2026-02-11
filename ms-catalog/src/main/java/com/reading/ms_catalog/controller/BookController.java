@@ -1,23 +1,15 @@
 package com.reading.ms_catalog.controller;
 
-
 import com.reading.ms_catalog.dto.BookDTO;
 import com.reading.ms_catalog.entity.Book;
 import com.reading.ms_catalog.repository.BookRepository;
-import com.reading.ms_catalog.service.AuthClientService;
 import com.reading.ms_catalog.dto.BookUpdate;
 import com.reading.ms_catalog.service.BookService;
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,15 +21,12 @@ public class BookController {
 
     private final BookService bookService;
     private final BookRepository bookRepository;
-    private final AuthClientService authClientService;
-    //private final SessionsClientService sessionsClientService;
+
 
     @Autowired
-    public BookController(BookService service, BookRepository bookRepository, AuthClientService authClientService /*SessionsClientService sessionsClientService*/) {
+    public BookController(BookService service, BookRepository bookRepository) {
         this.bookService = service;
         this.bookRepository = bookRepository;
-        this.authClientService = authClientService;
-        //this.sessionsClientService = sessionsClientService;
     }
 
 
@@ -49,32 +38,28 @@ public class BookController {
 
     @Transactional
     @PostMapping("/salvarLivro")
-    public ResponseEntity<BookDTO> saveBook(@RequestBody BookDTO bookDTO, Authentication authentication) {
-
-       Long userId = getUserFromAuth(authentication);
+    public ResponseEntity<BookDTO> saveBook(@RequestBody BookDTO bookDTO) {
 
         if (bookDTO.title() == null || bookDTO.title().trim().isEmpty()) {
             throw new ValidationException("Título do livro não pode estar vazio.");
         }
 
-        bookService.saveBook(bookDTO, userId);
+        bookService.saveBook(bookDTO, bookDTO.userId());
         return ResponseEntity.status(HttpStatus.CREATED).body(bookDTO);
     }
 
 
     //Exibir na Página Inicial
-    @GetMapping("/livrosSalvos")
-    public List<BookDTO> listBooks(Authentication authentication) {
-        Long userId = getUserFromAuth(authentication);
+    @GetMapping("/livrosSalvos/{userId}")
+    public List<BookDTO> listBooks(@PathVariable Long userId) {
         return bookService.listSavedBooks(userId);
     }
 
 
-    @GetMapping("/exibirDados/{id}")
-    public ResponseEntity<BookDTO> getDetailsBooks(@PathVariable Long id, Authentication authentication){
-        Long userId = getUserFromAuth(authentication);
+    @GetMapping("/exibirDados/{bookId}/{userId}")
+    public ResponseEntity<BookDTO> getDetailsBooks(@PathVariable Long bookId, @PathVariable Long userId){
 
-        Book book = bookRepository.findByIdAndUserId(id, userId)
+        Book book = bookRepository.findByBookIdAndUserId(bookId, userId)
                 .orElseThrow(() -> new ValidationException("Livro não encontrado"));
 
         BookDTO bookDTO = new BookDTO(book);
@@ -83,59 +68,43 @@ public class BookController {
     }
 
     @Transactional
-    @DeleteMapping("/excluirLivro/{id}")
-    public ResponseEntity<Void> deleteBook(@PathVariable Long id, Authentication authentication) {
+    @DeleteMapping("/excluirLivro/{bookId}/{userId}")
+    public ResponseEntity<Void> deleteBook(@PathVariable Long bookId, @PathVariable Long userId) {
 
-        Long userId = getUserFromAuth(authentication);
-
-        bookService.deleteBook(id, userId);
+        bookService.deleteBook(bookId, userId);
 
         return ResponseEntity.ok().build();
     }
 
 
     @Transactional
-    @PutMapping("/editarLivro/{id}")
-    public ResponseEntity<BookDTO> updateBook(@PathVariable Long id, @RequestBody BookUpdate updateBook, Authentication authentication) {
-        Long userId = getUserFromAuth(authentication);
+    @PutMapping("/editarLivro/{bookId}/{userId}")
+    public ResponseEntity<BookDTO> updateBook(@PathVariable Long bookId, @RequestBody BookUpdate updateBook, @PathVariable Long userId) {
 
-        Book bookToUpdate = bookService.updateBook(id, updateBook, userId);
+        Book bookToUpdate = bookService.updateBook(bookId, updateBook, userId);
+
         BookDTO bookDTO = new BookDTO(
-                bookToUpdate.getId(),
+                bookToUpdate.getBookId(),
                 bookToUpdate.getTitle(),
                 bookToUpdate.getAuthor(),
                 bookToUpdate.getPages(),
                 bookToUpdate.getCoverUrl(),
                 bookToUpdate.getPublicationYear(),
                 bookToUpdate.getFinished(),
-                bookToUpdate.getCountry()
+                bookToUpdate.getCountry(),
+                bookToUpdate.getUserId()
         );
         return ResponseEntity.ok(bookDTO);
     }
 
     //endpoint usado em ms-session
-    @PutMapping("/livros/{id}/finalizar")
-    public ResponseEntity<Void> markBookAsFinished(@PathVariable Long id, Authentication authentication){
-        Long userId = getUserFromAuth(authentication);
-        bookService.markAsFinished(id, userId);
+    @PutMapping("/{bookId}/finalizar/{userId}")
+    public ResponseEntity<Void> markBookAsFinished(@PathVariable Long bookId, @PathVariable Long userId){
+        bookService.markAsFinished(bookId, userId);
         return ResponseEntity.ok().build();
     }
 
 
-    @PostMapping("/logout")
-    public ResponseEntity<String> logout(HttpServletResponse response) {
-        SecurityContextHolder.clearContext();
-
-        ResponseCookie cookie = ResponseCookie.from("jwt", "")
-                .httpOnly(true)
-                .secure(true)
-                .domain("localhost")
-                .path("/")
-                .maxAge(0)
-                .build();
-        response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
-        return ResponseEntity.ok("Logout feito");
-    }
 
     //exibir nome de usuario no front
     /*@GetMapping("/usuario-logado")
@@ -151,7 +120,7 @@ public class BookController {
         }
     }*/
 
-    //Método para obter o JWT do cookie
+    /*Método para obter o JWT do cookie
     private String extractJwtFromCookie(HttpServletRequest request){
         if (request.getCookies() != null){
             for (Cookie cookie : request.getCookies()){
@@ -161,7 +130,7 @@ public class BookController {
             }
         }
         throw new ValidationException("JWT não encontrado no cookie");
-    }
+    }*/
 
     //Método para obter Id de user
     private Long getUserFromAuth(Authentication authentication) {
