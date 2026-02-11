@@ -18,46 +18,34 @@ public class SessionController {
         this.sessionService = sessionService;
     }
 
-
     @PostMapping("/iniciar")
-    public ResponseEntity<SessionDTO> startSession(@Valid @RequestBody SessionDTO sessionDTO,
-                                            @RequestHeader("Authorization") String token) {
+    public ResponseEntity<SessionDTO> startSession(@Valid @RequestBody SessionDTO sessionDTO) {
 
         ReadingSession readingSession = sessionService.startSession(
                 sessionDTO.userId(),
-                sessionDTO.bookId(),
-                token
+                sessionDTO.bookId()
         );
 
         SessionDTO dto = new SessionDTO(readingSession);
-
         return ResponseEntity.status(HttpStatus.CREATED).body(dto);
-
     }
 
-
     @PostMapping("/finalizar")
-    public ResponseEntity<SessionDTO> finishedSession(@Valid @RequestBody SessionDTO sessionDTO,
-                                                      @RequestHeader("Authorization") String token){
-
+    public ResponseEntity<SessionDTO> finishedSession(@Valid @RequestBody SessionDTO sessionDTO) {
         ReadingSession readingSession = sessionService.endSession(
                 sessionDTO.userId(),
                 sessionDTO.bookId(),
                 sessionDTO.lastPage(),
-                sessionDTO.readingTime(),
-                token
+                sessionDTO.readingTime()
         );
 
         SessionDTO dto = new SessionDTO(readingSession);
-
         return ResponseEntity.status(HttpStatus.OK).body(dto);
     }
 
-
-    //ENDPOINT PARA VERIFICAÇÃO DA ULTIMA PÁGINA LIDA
     @GetMapping("/ultima-pagina/{bookId}")
     public ResponseEntity<Integer> getLastPage(@PathVariable Long bookId){
-        try{
+        try {
             int lastPage = sessionService.getLastReadPage(bookId);
             return ResponseEntity.ok(lastPage);
         } catch (Exception e) {
