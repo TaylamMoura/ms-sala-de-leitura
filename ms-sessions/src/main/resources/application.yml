@@ -27,7 +27,7 @@ spring:
         register-health-check: true
 
   datasource:
-    url: ${DB_URL}
+    url: jdbc:postgresql://localhost:5432/ms_sessions
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD_POSTGRES}
     driver-class-name: org.postgresql.Driver
@@ -51,3 +51,6 @@ management:
     health:
       show-details: always
       enabled: true
+
+jwt:
+  secret: ${JWT_SECRET}
