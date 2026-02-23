@@ -1,61 +1,102 @@
+
 package com.reading.ms_sessions.service;
 
-
-import com.reading.ms_sessions.dto.BookRankingDTO;
-import com.reading.ms_sessions.dto.BookStatisticsDTO;
-import com.reading.ms_sessions.dto.OverallStatisticsDTO;
+import com.reading.ms_sessions.dto.*;
 import com.reading.ms_sessions.repository.StatisticsRepository;
-import com.reading.sala_de_leitura.entity.Usuario;
 
-
-import java.awt.print.Book;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
+
+import com.reading.ms_sessions.security.JwtService;
+import io.jsonwebtoken.Claims;
 import org.springframework.stereotype.Service;
 
 @Service
 public class StatisticsService {
 
-    private StatisticsRepository statisticsRepository;
+    private final StatisticsRepository statisticsRepository;
+    private final CatalogClient catalogClient;
+    private final JwtService jwtService; // injeta o serviço que valida/decodifica o token
 
-
-    public StatisticsService(StatisticsRepository statisticsRepository) {
+    public StatisticsService(StatisticsRepository statisticsRepository,
+                             CatalogClient catalogClient,
+                             JwtService jwtService) {
         this.statisticsRepository = statisticsRepository;
+        this.catalogClient = catalogClient;
+        this.jwtService = jwtService;
     }
 
+    //GERA ESTATÍSTICAS GERAIS DE TODOS LIVROS LIDOS PELO USUÁRIO
+    public OverallStatisticsDTO overallStatistics(String token) {
+        // Extrai userId do token
+        Claims claims = jwtService.validateToken(token);
+        Long userId = Long.valueOf(claims.getSubject());
 
-    //Service de Estatistíca do LIVRO
-    public BookStatisticsDTO bookStatistics(Long bookId, Usuario usuarioLogado) {
-        return new Book(
-                statisticsRepository.calculateDaysToFinishBook(bookId).orElse(0),
-                statisticsRepository.calculateAveragePagesPerDay(bookId).orElse(0.0),
-                statisticsRepository.calculateAverageSessionTime(bookId).orElse(0.0)
+        // Busca livros finalizados no ms-catalog
+        List<BookDTO> finishedBooks = catalogClient.listSavedBooks(userId)
+                .stream()
+                .filter(BookDTO::finished)
+                .toList();
 
-                /*
-                statisticsRepository.calcularDiasParaTerminarLivro(bookId).orElse(0),
-                statisticsRepository.calcularMediaPaginasPorDia(bookId).orElse(0.0),
-                statisticsRepository.calcularMediaTempoSessao(bookId).orElse(0.0)*/
-        );
-    }
+        // Ranking de livros
+        List<BookRankingDTO> rankingBooks = finishedBooks.stream()
+                .map(book -> new BookRankingDTO(
+                        book.id(),
+                        book.title(),
+                        book.author(),
+                        book.coverUrl()
+                ))
+                .toList();
+
+        //Ranking de países mais lidos (Top 3)
+        Map<String, Long> countryCount = finishedBooks.stream()
+                .collect(Collectors.groupingBy(BookDTO::country, Collectors.counting()));
+
+        List<CountryRankingDTO> topCountries = countryCount.entrySet().stream()
+                .sorted(Map.Entry.<String, Long>comparingByValue().reversed())
+                .limit(3)
+                .map(entry -> new CountryRankingDTO(entry.getKey(), entry.getValue())) // converte para DTO
+                .toList();
 
 
-    //Service de Estatistíca GERAL
-    public OverallStatisticsDTO overallStatistics(Usuario usuarioLogado) {
-        Long usuarioId = usuarioLogado.getId();
-        List<BookRankingDTO> rankingBooks = statisticsRepository.rankingBooks(usuarioLogado.getId());
+        // Gera dados dos livros: segundos, paginas lidas e total de livro
+        Long totalSecondsRead = Optional.ofNullable(statisticsRepository.totalSecondsReadByUser(userId)).orElse(0L);
+        int totalPagesRead = statisticsRepository.totalPagesReadByUser(userId);
+        int totalBooksRead = finishedBooks.size();
+        int totalCountriesRead = countryCount.keySet().size();
 
-        // Converte a string "HH:MM:SS" para segundos usando nosso método auxiliar (converterHorasParaSegundos)
-        Long totalSecondsRead = Optional.ofNullable(statisticsRepository.totalSecondsRead())
-                .orElse(0L);
-
-
+        //Retorna o DTO
         return new OverallStatisticsDTO(
                 rankingBooks,
                 totalSecondsRead,
-                statisticsRepository.totalPagesRead(),
-                statisticsRepository.totalBooksRead()
+                totalPagesRead,
+                totalBooksRead,
+                topCountries,
+                totalCountriesRead
         );
+
+        /* Retorna: Ranking de livros finalizados, Total de segundos lidos,
+        Total de páginas lidas, Total de livros finalizados
+         */
+    }
+
+
+    //GERA ESTATÍSTICAS DE UM LIVRO ESPECÍFICO
+    public BookStatisticsDTO bookStatistics(String token, Long bookId) {
+        Long userId = jwtService.extractUserId(token);
+
+        int daysRead = statisticsRepository.calculateDaysToFinishBook(bookId,userId).orElse(0);
+        double avgPagesPerDay = statisticsRepository.calculateAveragePagesPerDay(bookId, userId).orElse(0.0);
+        double avgSessionTime = statisticsRepository.calculateAverageSessionTime(bookId, userId).orElse(0.0);
+
+        return new BookStatisticsDTO(daysRead, avgPagesPerDay, avgSessionTime);
+
+        /*Retorna: Dias que levou para terminar o livro (daysRead), Média de páginas lidas por dia (averagePagesPerDay),
+        Média de tempo por sessão (averageSessionTime)
+         */
     }
 
 
