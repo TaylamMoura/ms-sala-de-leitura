@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/cadastro.css">
+    <link rel="icon" href="img/favicon.png" type="image/x-icon">
+    <title>Sala de Leitura | Cadastro</title>
+</head>
+<body>
+<header>
+        <img id="logotipo" src="img/logotipo.png" alt="logotipo">
+    <h2 id="titulo-logo">Sala de Leitura</h2>
+</header>
+
+<h1 class="titulo-cabecalho">Cadastro</h1>
+
+<a href="inicio.html" class="botao-voltar">
+    <img src="img/arrow_back.png" alt="Voltar">
+</a>
+<div class="container-cadastro">
+
+    <form id="formCadastro" action="/usuarios" method="POST">
+        <div class="formulario-grupo">
+            <label for="inputNome">Nome:</label>
+            <input type="text" id="inputNome" name="nome" placeholder="Nome e Sobrenome" required>
+        </div>
+
+        <div class="formulario-grupo">
+            <label for="inputDataNasc">Data de Nascimento:</label>
+            <input type="date" id="inputDataNasc" name="dataNascimento" required>
+        </div>
+
+        <div class="formulario-grupo">
+            <label for="inputEmail">Email:</label>
+            <input type="email" id="inputEmail" name="email" required>
+        </div>
+
+        <div class="formulario-grupo">
+            <label for="inputNomeUsuario">Nome de Usuário:</label>
+            <input type="text" id="inputNomeUsuario" name="usuario" placeholder="Defina um nome de usuário" required>
+        </div>
+
+        <div class="formulario-grupo-grande">
+            <div class="formulario-grupo">
+                <label for="inputSenha">Senha:</label>
+                <input type="password" id="inputSenha" name="senha" placeholder="Mínimo de 8 caracteres" minlength="8" required>
+                <span id="senhaMensagem" class="mensagem-validacao"></span>
+            </div>
+
+            <div class="formulario-grupo">
+                <label for="inputConfirmarSenha">Confirme sua senha:</label>
+                <input type="password" id="inputConfirmarSenha" name="confirmarSenha" placeholder="Digite a senha novamente" required>
+                <span id="mensagemConfirmaSenha" class="mensagem-validacao"></span>
+            </div>
+        </div>
+
+        <div class="formulario-grupo">
+            <button type="submit">Cadastrar</button>
+        </div>
+    </form>
+</div>
+<script src="js/cadastro.js"></script>
+</body>
+</html>

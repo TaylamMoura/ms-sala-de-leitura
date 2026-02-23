@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="css/styles.css">
+        <link rel="stylesheet" href="css/sessaoLeitura.css">
+        <link rel="icon" href="img/favicon.png" type="image/x-icon">
+        <title>Sala de Leitura | Sessão</title>
+    </head>
+    <body>
+
+    <header onload="exibirCapaLivro()">
+        <img id="logotipo" src="img/logotipo.png" alt="logotipo">
+        <h2 id="titulo-logo">Sala de Leitura</h2>
+    </header>
+
+    <a href="meu-livro.html" class="botao-voltar">
+        <img src="img/arrow_back.png" alt="Voltar">
+    </a>
+
+    <div class="capa-livro">
+        <img id="capaLivro" src="img/capa-livro.png" alt="Capa do livro">
+    </div>
+
+    <div class="cronometro">
+        <h1>00:00</h1>
+
+        <div class="botoes-cronometro">
+            <button type="button" onclick="iniciarSessao()" id="iniciarSessao">
+                <img src="img/Play circle.png" alt="Botão play">
+            </button>
+    
+            <button type="button" onclick="pausarSessao()" id="pausarSessao">
+                <img src="img/Pause circle.png" alt="Botão pausar">
+            </button>
+
+            <button type="button" onclick="finalizarSessao()" id="finalizarSessao">
+                <img src="img/Stop circle.png" alt="Botão stop">
+            </button>
+        </div>
+
+    </div>
+
+    <!-- Modal para adicionar páginas lidas -->
+    <div class="modal" id="modal-paginas" style="display: none;">
+        <div class="modal-content">
+            <span class="fechar" onclick="fecharModal()">&times;</span>
+            <p>Em que página você parou hoje?</p>
+            <label for="inputPaginas">Página: </label>
+            <input type="number" id="inputPaginas" name="paginas" placeholder="Exemplo: 15"><br>
+
+            <div class="formulario-botao"></div>
+                <button type="button" class="botao-modal" onclick="enviarSessaoLeitura()">Salvar</button>
+                <button type="button" class="botao-modal" onclick="cancelarEnvio()">Cancelar</button>
+        </div>
+
+    </div>
+    <script src="js/sessaoLeitura.js"></script>
+    </body>
+</html>

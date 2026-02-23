@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/inicio.css">
+    <link rel="icon" href="img/favicon.png" type="image/x-icon">
+    <title>Sala de Leitura</title>
+</head>
+<body>
+    <img id="logotipo" src="img/logotipo.png" alt="logotipo">
+    <div class="cabecalho-titulos">
+
+        <h1 id="titulo-logo">Bem-vindo ao Sala de Leitura</h1>
+        <h2>Sua aplicação para registrar leituras e estimular seu foco!</h2>
+        <hr>
+    </div>
+
+
+    <div class="container-usuario">
+
+        <div class="login">
+            <h3 id="titulo-usuario">Entrar</h3>
+            <p id="texto__p">Já tem cadastro? Então faça seu login!</p>
+            <button id="botao-login" type="submit" onclick="abrirFormularioLogin()">Login</button>
+        </div>
+
+        <div class="linha-vertical"></div>
+
+        <div class="cadastro">
+            <h3 id="titulo-usuario">Junte-se a nós</h3>
+            <p id="texto__p">Ainda não tem uma conta conosco? Cadastre-se!
+                É rapidinho!</p>
+            <button id="botao-cadastro" type="submit" onclick="abrirFormularioCadastro()">Cadastre-se</button>
+        </div>
+    </div>
+
+    <!--Modal de Login-->
+    <div class="modal" id="formulario-login"  style="display:none;" aria-hidden="true">
+        <div class="modal-content">
+            <span class="close" onclick="fecharFormularioLogin()">&times;</span>
+            <h3>Login</h3> 
+
+            <form id="formLogin" onsubmit="event.preventDefault(); fazerLogin();">
+                <div class="formulario-grupo">
+                    <label for="inputLogin">Email:</label>
+                    <input type="text" id="inputLogin" name="nome" placeholder="Digite seu email"><br>
+                </div>
+
+                <div class="formulario-grupo">
+                    <label for="inputSenha">Senha:</label>
+                    <input type="password" id="inputSenha" name="senha" placeholder="Digite sua senha"><br>
+                </div>
+                <div class="formulario-botao"></div>
+                <button type="submit" class="botao-modal">Entrar</button>
+                <button type="button" class="botao-modal" onclick="fecharFormularioLogin()">Cancelar</button>
+            </form>
+        </div>
+    </div>
+    <script src="js/inicio.js"></script>
+</body>
+</html>

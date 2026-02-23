@@ -1,0 +1,146 @@
+import url('styles.css');
+
+
+div.total-container h2.titulo__secundario  {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    font-weight: bold;
+    margin-top: 5px !important;
+}
+
+.titulo__secundario{
+    text-align: center !important; 
+    width: 100% !important; 
+    padding-left: 30px !important;
+    margin-top: 5px;
+}
+
+.layout-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: stretch;
+    gap: 0px;
+    width: 70%;
+    margin: 0 auto;
+}
+
+.total-container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 60%;
+    margin-right: 0;
+}
+
+/* Alinha Livro principal + secundários lado a lado */
+.livros-container {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 40px;
+}
+
+/* Livro principal à esquerda */
+.livro-principal {
+    flex: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 15px;
+    max-width: 250px;
+    font-family: var(--fonte-principal);
+}
+
+.livro-capa-principal img {
+    width: 170px;
+    border-radius: 10px;
+}
+
+#tituloLivroPrincipal {
+    font-size: 14px;
+    margin-bottom: 5px;
+}
+
+#autorLivroPrincipal {
+    color: #252424;
+    font-weight: normal;
+    margin-top: 2px;
+    font-size: 13px;
+}
+
+.livros-secundarios {
+    flex: 3;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.livro-item {
+    display: flex;
+    align-items: center;
+    padding: 5px;
+}
+
+.livro-item .livro-capa img {
+    width: 45px;
+    border-radius: 5px;
+}
+
+/* Bloco de informações do livro secundário (Título + Autor) */
+.info-bloco {
+    display: flex;
+    flex-direction: column;
+    margin-left: 15px;
+}
+
+/* Título e autor dos livros secundários */
+.info-bloco span {
+    font-size: 14px;
+    font-family: var(--fonte-principal);
+}
+
+/* Título do livro secundário em negrito */
+.info-bloco span:first-child {
+    font-weight: 300;
+}
+
+/*  Autor do livro secundário em tom de cinza */
+.info-bloco span:last-child {
+    color: #413f3f;
+}
+
+/* PARTE DAS ESTATÍSTICAS*/
+
+.estatisticas-container {
+    border-left: 1px solid #413f3f;
+    padding-left: 30px;
+    margin-left: -50px;
+}
+
+.estatisticas-container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 30%;
+}
+
+.estatisticas-bloco {
+    font-size: 14px;
+    display: flex; 
+    align-items: center; 
+    gap: 10px; 
+    font-family: var(--fonte-principal);
+    white-space: nowrap;
+    margin-top: 15px;
+}
+
+.estatisticas-bloco p {
+    display: inline;
+}
+
+.estatisticas-bloco span {
+    font-weight: bold;
+}

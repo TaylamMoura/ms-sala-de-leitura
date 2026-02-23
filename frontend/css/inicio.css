@@ -1,0 +1,121 @@
+import url('styles.css');
+
+body{
+    margin:10px;
+}
+
+.cabecalho-titulos{
+    margin: 30px;
+}
+
+#titulo-logo{
+    font-size:50px;
+    margin:10px;
+}
+
+h2{
+    font-family: var(--fonte-textos);
+    font-size: 20px;
+    font-weight: 300;
+
+}
+
+h3{
+    font-size: 30px;
+    font-family: var(--fonte-principal);
+    font-weight: lighter;
+
+}
+
+#texto__p{
+    font-family: var(--fonte-textos);
+    font-size: 18px;
+    font-weight: 500;
+
+}
+
+/*linha*/
+hr{
+    border: none;
+    height: 1px;
+    background-color: black;
+}
+
+
+.container-usuario{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 20px;
+}
+
+.login, .cadastro{
+    flex: 1;
+    text-align: center;
+}
+
+.linha-vertical{
+    width: 1px;
+    height: 300px;
+    background-color: black;
+    margin: 0 auto;
+}
+
+#botao-login, #botao-cadastro{
+    width: 170px;
+    height: 70px;
+    background-color: #E0E5B6;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-family: var(--fonte-botao);
+    font-size: 20px;
+    margin: 20px auto;
+    text-align: center;
+}
+
+#botao-login:hover, #botao-cadastro:hover{
+    background-color: #C84C05;
+}
+
+/* MODAL*/
+.modal{
+    display: none;
+    position: fixed;
+    z-index: 10;
+    gap: 15px;
+}
+
+.modal-content {
+    width: 400px;
+    border-radius: 5px;
+    background-color: var(--cor-modal);
+    text-align: center;
+    padding: 20px;
+}
+
+.formulario-grupo{
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    padding: 8px;
+    border: none;
+    border-radius: 5px;
+}
+
+.formulario-grupo input{
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    font-family: var(--fonte-principal);
+    height: 15px;
+}
+
+@media (max-width: 768px) {
+    button {
+        width: 100%;
+    }
+}

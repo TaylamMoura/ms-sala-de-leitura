@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/estatistica-geral.css">
+    <link rel="icon" href="img/favicon.png" type="image/x-icon">
+    <title>Meu Desempenho</title>
+</head>
+
+<body>
+
+<header>
+    <img id="logotipo" src="img/logotipo.png" alt="logotipo">
+    <h2 id="titulo-logo">Sala de Leitura</h2>
+</header>
+
+    <a href="index.html" class="botao-voltar" >
+        <img src="img/arrow_back.png" alt="Voltar">
+    </a>
+<h2 class="titulo__secundario" style="margin-bottom: 40px; font-weight: bold">Minha Jornada de Leitura</h2>
+
+<div class="layout-container">
+    <!-- Container para livro principal + secundários -->
+    <div class="total-container">
+        <div class="livros-container">
+            <!-- Div do Livro principal -->
+            <div class="livro-principal">
+
+                <div class="livro-capa-principal">
+                    <img id="capaLivroPrincipal" src="" alt="Capa do livro principal">
+                </div>
+
+                <h2 id="tituloLivroPrincipal">Título do Livro</h2>
+                <p id="autorLivroPrincipal">Autor do Livro</p>
+            </div>
+
+            <!-- Livros secundários -->
+            <div class="livros-secundarios">
+                <!-- Os livros serão inseridos aqui via JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <!--  Container de estatísticas  -->
+    <div class="estatisticas-container">
+
+        <div class="estatisticas-bloco">
+            <img src="img/Clock.png">
+            <p>Horas lidas:</p>
+            <span id="totalHorasLidas">0 horas e 0 minutos</span>
+        </div>
+
+        <div class="estatisticas-bloco">
+            <img src="img/paginas-2.png"> 
+            <p>Páginas lidas:</p>
+            <span id="totalPaginasLidas">0 páginas</span><p> páginas</p>
+        </div>
+
+        <div class="estatisticas-bloco">
+            <img src="img/total-livros.png">
+            <p>Total de livros lidos:</p>
+            <span id="totalLivrosLidos">0 livros</span><p> livros.</p>
+        </div>
+    </div>
+</div>
+
+<script src="js/estatistica-geral.js"></script>
+</body>
+</html>

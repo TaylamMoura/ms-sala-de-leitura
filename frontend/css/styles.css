@@ -1,0 +1,168 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Tenor+Sans&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Courier+Prime:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat+Alternates:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Ms+Madi&display=swap');
+/*novas fontes*/
+
+@import url('https://fonts.googleapis.com/css2?family=Special+Elite&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cutive+Mono&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,200..900;1,200..900&display=swap');
+
+
+
+
+:root {
+    --fonte-titulo-pag: "Special Elite", system-ui; /*sala de leitura*/
+    --fonte-textos: "Cutive Mono", monospace; /*para textos - pag inicial*/
+    --fonte-titulo-livro: "Tenor Sans", serif; /*livros da pag inicial*/
+    --fonte-principal: "Courier Prime", serif; /*da pagina meu-livro*/
+    --fonte-botao: "Source Code Pro", monospace; /*font-weight: weight;*/
+
+
+    --cor-fundo: #E6C767;
+    /*--cor-fundo2:#FFF2C2;*/
+    --cor-fundo2: #638C6D;
+    --cor-rodape: #C84C05;
+    --cor-botao:#638C6D;
+    --cor-botao-letra: #F8F5E9;
+    --cor-modal: #E0E5B6;
+    /*--cor-hover: #C84C05;*/
+    --cor-hover: #E0E5B6;
+    --cor-barra-rolagem:#638C6D;
+    --cor-thumb-rolagem: #F8F0E5;
+}
+
+*{
+    box-sizing: border-box;
+}
+body {
+    padding: 10px; /
+    margin: 0;
+    box-sizing: border-box;
+}
+
+
+header{
+  display: flex;
+  border-bottom: 1px solid #6d6969;
+  padding-bottom: 0;
+  margin: 0 ;
+
+  position:relative;
+}
+
+#logotipo {
+  width: 70px;
+  height: 70px;
+  object-fit: cover;
+  border-radius: 50%;
+  margin: 0;
+}
+
+#titulo-logo {
+  font-family: var(--fonte-titulo-pag);
+  font-size: 25px;
+  font-weight: 300;
+  padding: 0;
+  margin: 20px;
+  margin-bottom: 0;
+  margin-left: 1px;
+}
+
+body {
+    background-color: var(--cor-fundo2);
+    padding: 5px;
+    margin: 1px;
+}
+
+a {
+  text-decoration: none;
+  color: black;
+}
+
+.botao-voltar{
+    display: block;
+    position: relative; 
+    margin-top: 20px; 
+    margin-left: 20px;
+}
+
+.titulo__secundario{
+    font-family: var(--fonte-textos);
+    font-size: 25px;
+    font-weight: 300;
+}
+
+/* Estilo para a janela modal pag inicial*/
+.modal {
+  display: flex;
+  position:fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  padding-top: 20px;
+}
+
+/* Conteúdo da modal */
+.modal-content {
+  background-color: var(--cor-modal);
+  margin: 15% auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 40%;
+  max-width: 600px; /
+  border-radius: 15px;
+  box-shadow: none;
+  font-family: var(--fonte-principal);
+  border-radius: 5px;
+}
+
+.botao-modal {
+  padding: 10px 20px;
+  background-color: #638C6D;
+  border: none;
+  border-radius: 5px;
+  color: var(--cor-botao-letra);
+  cursor: pointer;
+  font-family: var(--fonte-botao);
+  font-size: 20px;
+  width: auto;
+}
+
+.botao-modal:hover {
+  background-color: var(--cor-hover);
+}
+
+/* Botão de fechar a modal */
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+/* Barra de rolagem  */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--cor-barra-rolagem);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--cor-thumb-rolagem);
+  border-radius: 10px;
+}

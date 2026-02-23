@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/index.css">
+    <link rel="icon" href="img/favicon.png" type="image/x-icon">
+    <title>Minha Estante</title>
+</head>
+
+<body onload="ExibirLivrosNaPag()">
+<header>
+    <img id="logotipo" src="img/logotipo.png" alt="logotipo"> 
+    <h2 id="titulo-logo">Sala de Leitura</h2>
+    <button onclick="mostrarEstatisticaGeral()" type="button" class="botao" id="estatisticas">
+        <img src="img/barras-estatisticas.png" alt="Estatisticas">
+    </button>
+    <button id="logout" onclick="fazerLogout()">Sair</button>
+</header>
+
+<form id="buscarLivroForm" onsubmit="return false;">
+    <input type="text" class="tituloLivro" id="tituloLivro" placeholder="Digite o título do livro">
+    <button id="botao-buscar" type="submit" class="botao">
+        <img src="img/Search.png" alt="Buscar">
+    </button>
+</form>
+
+<div class="minhas-leituras-container">
+    <h2 class="titulo__secundario">Minhas Leituras</h2>
+    <div id="minhasLeituras" class="livros-container">
+        <!-- Capas dos livros adicionadas pelo usuário -->
+
+    </div>
+</div>
+
+<!-- Janela modal com resultados -->
+<div id="resultadoModal" class="modal" style="display: none;">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <div id="resultadoBusca"></div>
+    </div>
+</div>
+<script src="js/app.js"></script>
+</body>
+</html>

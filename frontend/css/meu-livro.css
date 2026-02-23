@@ -1,0 +1,239 @@
+import url('styles.css');
+
+/*Titulo do livro na pagina meu-livro*/
+#tituloLivro {
+  font-family: var(--fonte-principal);
+}
+
+.grid-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.topo-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-start;
+    width: 100%;
+}
+
+/* BOTAO EDITAR, DELETAR E FAVORITAR */
+.botao {
+  top: 90px;
+  padding: 10px;
+  background-color: #638C6D;
+  border: none;
+  border-radius: 30px;
+  cursor: pointer;
+}
+
+.botao img {
+  height: auto;
+}
+
+.botao:hover {
+  background-color: var(--cor-hover);
+}
+
+/* BOTAO EDITAR, DELETAR E FAVORITAR CONTAINER*/
+.botoes-dir {
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  top: 180px;
+  right: 50px;
+  gap: 30px;
+}
+
+/*PAG MEU-LIVRO*/
+.livro-container {
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  border-radius: 10px;
+  padding: 10px;
+  flex-wrap: wrap;
+}
+
+.info-bloco-geral{
+  display: flex;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  gap: 10px;
+
+}
+.info-bloco {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  margin: 0 1px;
+  flex: 1;
+  gap:10px;
+  margin-left: 50px;
+  padding-top: 18px;
+}
+
+.info-bloco-geral{
+  gap:1px
+}
+
+.label {
+  font-weight: bold;
+  margin-bottom: 5px;
+  font-family: var(--fonte-principal);
+  margin: 0;
+  font-size: 14px;
+  color: rgb(48, 44, 44);
+}
+
+.livro-info-img {
+  width: 24px;
+  height: 24px;
+  margin-bottom: 2px;
+}
+
+
+.info-bloco p {
+  margin: 0;
+  font-family: var(--fonte-principal);
+  line-height: 1.2;
+  font-size: 12px;
+}
+
+.livro-capa {
+  margin-top: 20px;
+}
+
+.livro-capa img {
+  width: 150px;
+  height: auto;
+  margin-left: 20px;
+  border-radius: 10px;
+}
+
+.livro-informacao {
+  display: flex;
+  flex-direction: column;
+  padding-left: 20px;
+  padding-top: 40px;
+  font-family: var(--fonte-principal);
+  gap: 30px;
+  font-size: 20px;
+  line-height: 0.2;
+}
+
+.livro-informacao p {
+  display: flex;
+  align-items: center;
+  margin: 10px 0;
+  padding-left: 20px;
+  border: none;
+}
+
+.livro-informacao__img img {
+  width: 25px;
+  height: auto;
+  margin-right: 20px;
+}
+
+.titulo__secundario{
+  padding-left: 25px;
+  margin-top: 30px;
+}
+
+/*MODAL EDITAR LIVRO*/
+#formEdicaoLivro {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.formulario-grupo {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.formulario-grupo label {
+  margin-bottom: 5px;
+  font-weight: normal;
+}
+
+.formulario-grupo input {
+  width: 70%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+/*ESTILO MODAL EXCLUIR*/
+
+.formulario-botao{
+  display: flex;
+  justify-content: space-between;
+  gap:30px;
+  flex-direction: row;
+  align-items: center;
+  font-size: 16px;
+  font-family: var(--fonte-principal);
+}
+
+.botao-iniciar{
+  border-radius: 10px;
+  background-color: #E0E5B6;
+  cursor: pointer;
+  border: 1px;
+  font-family: var(--fonte-botao);
+  width: 200px;
+  height: 40px;
+  padding: 10px 20px;
+  font-size: 16px;
+  position: absolute;
+  top: auto;
+  margin-top: 140px;
+}
+
+.botao-iniciar:hover{
+  background-color: #C84C05;
+}
+
+.container-botao-sessao{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+}
+
+.barra-progresso-container {
+  position: absolute;
+  left: 33%;
+  top:60%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 20px 0;
+
+}
+
+.barra-progresso {
+  width: 400px;
+  height: 8px;
+  background-color: #F8F0E5;
+  border-radius: 10px;
+  overflow: hidden;
+  position: relative;
+}
+
+#progresso {
+  height: 100%;
+  background-color: #C84C05;
+  transition: width 0.3s ease;
+}
+
+#paginaAtual,
+#totalPaginas {
+  font-size: 16px;
+  font-weight: bold;
+}

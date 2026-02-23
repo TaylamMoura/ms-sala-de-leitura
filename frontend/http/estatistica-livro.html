@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/estatistica-livro.css">
+    <link rel="icon" href="img/favicon.png" type="image/x-icon">
+    <title>Meu Desempenho</title>
+</head>
+
+<body>
+<header>
+    <img id="logotipo" src="img/logotipo.png" alt="logotipo"> 
+    <h2 id="titulo-logo">Sala de Leitura</h2>
+</header>
+
+    <a href="index.html" class="botao-voltar">
+        <img src="img/arrow_back.png" alt="Voltar">
+    </a>
+    <h2 class="titulo__secundario">Minha Jornada de Leitura</h2>
+
+<div class="super-bloco">
+    <div class="livro-container">
+        <div class="livro-capa">
+            <img id="capaLivro" src="img/capa-livro.png" alt="Capa do livro">
+        </div>
+
+        <div class="livro-detalhes">
+            <div class="info-bloco-geral">
+
+                <div class="info-bloco">
+                    <span class="label">Livro</span>
+                    <img id="tituloLivroImg" src="img/Book.png" alt="Título do Livro" class="livro-info-img">
+                    <p id="tituloLivro"></p>
+                </div>
+
+                <div class="info-bloco">
+                    <span class="label">Autor</span>
+                    <img id="autorLivroImg" src="img/person.png" alt="Autor do Livro" class="livro-info-img">
+                    <p id="autorLivro"></p>
+                </div>
+
+                <div class="info-bloco">
+                    <span class="label">Páginas</span>
+                    <img id="paginasLivroImg" src="img/Pen tool.png" alt="Páginas do Livro" class="livro-info-img">
+                    <p id="paginasLivro"></p>
+                </div>
+
+                <div class="info-bloco">
+                    <span class="label">Ano</span>
+                    <img id="anoPublicacaoImg" src="img/Calendar.png" alt="Ano de Publicação" class="livro-info-img">
+                    <p id="anoPublicacao"></p>
+                </div>
+            </div>
+
+            <div class="info-estatistica">
+
+                <div class="estatisticas-bloco">
+                    <img src="img/Book open.png" alt="média de tempo para finalizar livro">
+                    <p>Livro finalizado em <strong><span id="diasLidos">XX</span></strong> dias.</p>
+                </div>
+
+                <div class="estatisticas-bloco">
+                    <img src="img/paginas.png" alt="Páginas lidas por sessão">
+                    <p>Média de páginas por sessão: <strong><span id="mediaPaginasPorDia">XX</span></strong> páginas.</p>
+                </div>
+
+                <div class="estatisticas-bloco">
+                    <img src="img/Clock.png" alt="média de tempo por sessão">
+                    <p>Média de tempo de sessão: <strong><span id="mediaTempoSessao">XX</span></strong>.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="js/estatistica.js"></script>
+</body>
+</html>
