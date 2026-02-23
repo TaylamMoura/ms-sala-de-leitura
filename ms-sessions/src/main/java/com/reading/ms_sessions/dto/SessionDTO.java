@@ -6,15 +6,9 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 
 public record SessionDTO(
-        @NotNull
         Long userId,
-
-        @NotNull
         Long bookId,
-
-        @Min(1)
         int pagesRead,
-
         int readingTime,
         int lastPage,
         String coverUrl) {
