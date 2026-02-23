@@ -8,5 +8,7 @@ public record OverallStatisticsDTO(
         List<BookRankingDTO> bookRanking,
         Long totalSecondsRead,
         int totalPagesRead,
-        int totalBooksReads
+        int totalBooksReads,
+        List<CountryRankingDTO> topCountries,
+        int totalCountriesRead
 ) { }
