@@ -1,6 +1,8 @@
 package com.reading.ms_sessions.controller;
 
+import com.reading.ms_sessions.dto.EndSessionDTO;
 import com.reading.ms_sessions.dto.SessionDTO;
+import com.reading.ms_sessions.dto.StartSessionDTO;
 import com.reading.ms_sessions.entity.ReadingSession;
 import com.reading.ms_sessions.service.SessionService;
 import jakarta.validation.Valid;
@@ -19,28 +21,18 @@ public class SessionController {
     }
 
     @PostMapping("/iniciar")
-    public ResponseEntity<SessionDTO> startSession(@Valid @RequestBody SessionDTO sessionDTO) {
+    public ResponseEntity<SessionDTO> startSession(@Valid @RequestBody StartSessionDTO dto) {
 
-        ReadingSession readingSession = sessionService.startSession(
-                sessionDTO.userId(),
-                sessionDTO.bookId()
-        );
+        ReadingSession readingSession = sessionService.startSession(dto);
 
-        SessionDTO dto = new SessionDTO(readingSession);
-        return ResponseEntity.status(HttpStatus.CREATED).body(dto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(new SessionDTO(readingSession));
     }
 
     @PostMapping("/finalizar")
-    public ResponseEntity<SessionDTO> finishedSession(@Valid @RequestBody SessionDTO sessionDTO) {
-        ReadingSession readingSession = sessionService.endSession(
-                sessionDTO.userId(),
-                sessionDTO.bookId(),
-                sessionDTO.lastPage(),
-                sessionDTO.readingTime()
-        );
+    public ResponseEntity<SessionDTO> finishedSession(@Valid @RequestBody EndSessionDTO dto) {
+        ReadingSession readingSession = sessionService.endSession(dto);
 
-        SessionDTO dto = new SessionDTO(readingSession);
-        return ResponseEntity.status(HttpStatus.OK).body(dto);
+        return ResponseEntity.status(HttpStatus.OK).body(new SessionDTO(readingSession));
     }
 
     @GetMapping("/ultima-pagina/{bookId}")
