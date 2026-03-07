@@ -144,3 +144,31 @@ div.total-container h2.titulo__secundario  {
 .estatisticas-bloco span {
     font-weight: bold;
 }
+
+/* Estilo específico para o bloco de ranking */
+.ranking-paises {
+    flex-direction: column; /* Organiza título e lista um embaixo do outro */
+    align-items: flex-start; /* Alinha tudo à esquerda */
+    gap: 5px; /* Espaço entre o título e a lista */
+}
+
+/* Div que segura a lista de países vinda do JS */
+.ranking-lista {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-left: 34px; /* Alinha o texto exatamente abaixo do texto do título (pulando o ícone) */
+    margin-top: 5px;
+}
+
+.ranking-lista span {
+    font-weight: normal; /* Para não brigar com o negrito do 1º, 2º... */
+    font-size: 13px;
+    color: #413f3f;
+}
+
+/* Estilo para o ícone do bloco de ranking (mesmo tamanho dos outros) */
+.estatisticas-bloco img {
+    width: 24px; /* Ajuste conforme o tamanho dos seus ícones atuais */
+    height: auto;
+}
