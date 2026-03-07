@@ -86,5 +86,19 @@ services:
     ports:
       - "8000:8000"
 
+  # 7. Frontend (Nginx)
+  frontend:
+    build:
+      context: ./frontend # Onde está seu Dockerfile e arquivos
+    container_name: leitura-frontend
+    ports:
+      - "8085:80"
+    restart: always
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 128M
+
 volumes:
   postgres_data:
