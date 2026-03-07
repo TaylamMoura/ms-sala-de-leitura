@@ -3,38 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="css/styles.css">
-    <link rel="stylesheet" href="css/meu-livro.css">
-    <link rel="icon" href="img/favicon.png" type="image/x-icon">
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../css/meu-livro.css">
+    <link rel="icon" href="../img/favicon.png" type="image/x-icon">
     <title>Minha Leitura</title>
 </head>
 <body>
-<header onload="exibirInformacoesLivro()">
-    <img id="logotipo" src="img/logotipo.png" alt="logotipo">
+<header>
+    <img id="logotipo" src="../img/logotipo.png" alt="logotipo">
     <h2 id="titulo-logo">Sala de Leitura</h2>
 </header>
 
 <div class="botoes-dir">
     <button onclick="mostrarFormularioEdicao()" type="button" class="botao" id="editar-info-livro">
-        <img src="img/Edit 3.png" alt="Editar">
+        <img src="../img/Edit 3.png" alt="Editar">
     </button>
 
     <button onclick="mostrarConfirmacaoExclusao()" type="button" class="botao" id="excluir-livro">
-        <img src="img/delete.png" alt="Excluir">
+        <img src="../img/delete.png" alt="Excluir">
     </button>
     <button onclick="favoritos()" type="button" class="botao" id="livros_favoritos">
-        <img src="img/Heart.png" alt="Favoritos">
+        <img src="../img/Heart.png" alt="Favoritos">
     </button>
 
     <button onclick="redirecionarEstatisticasLivro()" type="button" class="botao" id="estatisticas">
-        <img src="img/barras-estatisticas.png" alt="Estatisticas">
+        <img src="../img/barras-estatisticas.png" alt="Estatisticas">
     </button>
 </div>
 
 
 <div class="topo-container">
-    <a href="index.html" class="botao-voltar">
-        <img src="img/arrow_back.png" alt="Voltar">
+    <a href="../index.html" class="botao-voltar">
+        <img src="../img/arrow_back.png" alt="Voltar">
     </a>
 
    <h2 class="titulo__secundario">Minha Leitura</h2>
@@ -43,30 +43,35 @@
 
 <div class="livro-container">
     <div class="livro-capa">
-        <img id="capaLivro" src="img/capa-livro.png" alt="Capa do livro">
+        <img id="capaLivro" src="../img/capa-livro.png" alt="Capa do livro">
     </div>
 
     <div class="info-bloco-geral">
         <div class="info-bloco">
             <span class="label">Livro</span>
-            <img id="tituloLivroImg" src="img/Book.png" alt="Título do Livro" class="livro-info-img">
+            <img id="tituloLivroImg" src="../img/Book.png" alt="Título do Livro" class="livro-info-img">
             <p id="tituloLivro"></p>
         </div>
 
         <div class="info-bloco">
             <span class="label">Autor</span>
-            <img id="autorLivroImg" src="img/person.png" alt="Autor do Livro" class="livro-info-img">
+            <img id="autorLivroImg" src="../img/person.png" alt="Autor do Livro" class="livro-info-img">
             <p id="autorLivro"></p>
         </div>
         <div class="info-bloco">
             <span class="label">Páginas</span>
-            <img id="paginasLivroImg" src="img/Pen tool.png" alt="Páginas do Livro" class="livro-info-img">
+            <img id="paginasLivroImg" src="../img/Pen tool.png" alt="Páginas do Livro" class="livro-info-img">
             <p id="paginasLivro"></p>
         </div>
         <div class="info-bloco">
             <span class="label">Ano</span>
             <img id="anoPublicacaoImg" src="img/Calendar.png" alt="Ano de Publicação" class="livro-info-img">
             <p id="anoPublicacao"></p>
+        </div>
+        <div class="info-bloco">
+            <span class="label">País</span>
+            <img id="paisOrigemImg" src="../img/country.png" alt="País de Origem" class="livro-info-img">
+            <p id="paisOrigem"></p>
         </div>
 
     </div>
@@ -105,9 +110,8 @@
             <div class="formulario-botao"></div>
             <button type="button" class="botao-modal" onclick="enviarEdicaoLivro()">Salvar</button>
             <button type="button" class="botao-modal" onclick="cancelarEdicao()">Cancelar</button>
+        </form>
     </div>
-    </form>
-</div>
 </div>
 
 <!-- Modal para confirmar exclusão -->
@@ -122,7 +126,7 @@
     </div>
 </div>
 
-<script src="js/livro-info.js"></script>
+<script src="../js/livro-info.js"></script>
 </body>
 
 </html>

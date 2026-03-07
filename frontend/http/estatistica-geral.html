@@ -3,21 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="css/styles.css">
-    <link rel="stylesheet" href="css/estatistica-geral.css">
-    <link rel="icon" href="img/favicon.png" type="image/x-icon">
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../css/estatistica-geral.css">
+    <link rel="icon" href="../img/favicon.png" type="image/x-icon">
     <title>Meu Desempenho</title>
 </head>
 
 <body>
 
 <header>
-    <img id="logotipo" src="img/logotipo.png" alt="logotipo">
+    <img id="logotipo" src="../img/logotipo.png" alt="logotipo">
     <h2 id="titulo-logo">Sala de Leitura</h2>
 </header>
 
-    <a href="index.html" class="botao-voltar" >
-        <img src="img/arrow_back.png" alt="Voltar">
+    <a href="../inicio.html" class="botao-voltar" >
+        <img src="../img/arrow_back.png" alt="Voltar">
     </a>
 <h2 class="titulo__secundario" style="margin-bottom: 40px; font-weight: bold">Minha Jornada de Leitura</h2>
 
@@ -47,25 +47,31 @@
     <div class="estatisticas-container">
 
         <div class="estatisticas-bloco">
-            <img src="img/Clock.png">
+            <img src="../img/Clock.png">
             <p>Horas lidas:</p>
             <span id="totalHorasLidas">0 horas e 0 minutos</span>
         </div>
 
         <div class="estatisticas-bloco">
-            <img src="img/paginas-2.png"> 
+            <img src="../img/paginas-2.png"> 
             <p>Páginas lidas:</p>
             <span id="totalPaginasLidas">0 páginas</span><p> páginas</p>
         </div>
 
         <div class="estatisticas-bloco">
-            <img src="img/total-livros.png">
+            <img src="../img/total-livros.png">
             <p>Total de livros lidos:</p>
             <span id="totalLivrosLidos">0 livros</span><p> livros.</p>
+        </div>
+
+        <div class="estatisticas-bloco ranking-paises">
+            <img src="../img/Book.png"> <p>Países mais lidos:</p>
+            <div id="rankingPaisesContainer" class="ranking-lista">
+                </div>
         </div>
     </div>
 </div>
 
-<script src="js/estatistica-geral.js"></script>
+<script src="../js/estatistica-geral.js"></script>
 </body>
 </html>
