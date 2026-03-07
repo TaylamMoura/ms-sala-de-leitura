@@ -1,3 +1,14 @@
+const GATEWAY_URL = "http://localhost:8080"; 
+
+function getAuthHeader(){
+    const token = localStorage.getItem('token');
+    return {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+    };
+}
+
+
 function formatarHorasMinutos(segundos) {
     let horas = Math.floor(segundos / 3600);
     let minutos = Math.floor((segundos % 3600) / 60);
@@ -6,59 +17,87 @@ function formatarHorasMinutos(segundos) {
 
 // Função para carregar estatísticas GERAIS
 function mostrarEstatisticaGeral() {
+    try{
+        const response = fetch(`${GATEWAY_URL}/estatistica-geral`, {
+            method: 'GET',
+            headers: getAuthHeader(),
+    });
 
-    fetch("/estatistica-geral")
-        .then(response => response.json())
-        .then(data => {
-            console.log("Dados recebidos da API:", data);
+    if(!response.ok){
+        if(response.status === 401) window.location.href = 'inicio.html';
+        throw new Error("Erro ao carregar estatísticas gerais: " + response.status);
+    }
 
-            if (!data || !data.rankingLivros || data.rankingLivros.length === 0) {
-                console.error("Erro: Nenhum livro encontrado no ranking.");
-                return;
-            }
+    const data = response.json();
 
-            const rankingLivros = data.rankingLivros;
+    document.getElementById("totalHorasLidas").textContent = formatarHorasMinutos(data.totalSecondsRead);
+    document.getElementById("totalPaginasLidas").textContent = data.totalPagesRead || 0;
+    document.getElementById("totalLivrosLidos").textContent = data.totalBooksReads || 0;
 
-            // Exibe o primeiro livro como destaque do ranking
-            const capaLivro = document.getElementById("capaLivroPrincipal");
-            const tituloLivro = document.getElementById("tituloLivroPrincipal");
-            const autorLivro = document.getElementById("autorLivroPrincipal");
+    const campoTotalPaises = document.getElementById("totalPaisesLidos");
+        if (campoTotalPaises) campoTotalPaises.textContent = data.totalCountriesRead || 0;
 
-            if (capaLivro) capaLivro.src = rankingLivros[0].urlCapa;
-            if (tituloLivro) tituloLivro.textContent = rankingLivros[0].titulo;
-            if (autorLivro) autorLivro.textContent = rankingLivros[0].autor;
+        // 2. Ranking de Livros (Destaque e Secundários)
+        const ranking = data.bookRanking;
+        if (ranking && ranking.length > 0) {
+            // Primeiro livro (Destaque)
+            const capaPrincipal = document.getElementById("capaLivroPrincipal");
+            if (capaPrincipal) capaPrincipal.src = ranking[0].coverUrl;
+            
+            const tituloPrincipal = document.getElementById("tituloLivroPrincipal");
+            if (tituloPrincipal) tituloPrincipal.textContent = ranking[0].title;
+            
+            const autorPrincipal = document.getElementById("autorLivroPrincipal");
+            if (autorPrincipal) autorPrincipal.textContent = ranking[0].author;
 
-            // Exibe estatísticas abaixo dos livros
-            document.getElementById("totalHorasLidas").textContent = formatarHorasMinutos(data.totalSegundosLidos);
-            document.getElementById("totalPaginasLidas").textContent = data.totalPaginasLidas;
-            document.getElementById("totalLivrosLidos").textContent = data.totalLivrosLidos;
+            // Próximos 4 livros (Secundários)
+            renderizarLivrosSecundarios(ranking.slice(1, 5));
+        }
 
-            // Exibe os próximos 4 livros na lista secundária
-            const rankingContainer = document.querySelector(".livros-secundarios");
-            if (rankingContainer) {
-                rankingContainer.innerHTML = ""; 
+        // 3. Ranking de Países (Top 3)
+        renderizarRankingPaises(data.topCountries);
 
-                rankingLivros.slice(1, Math.min(5, rankingLivros.length)).forEach(livro => { 
-                    const livroDiv = document.createElement("div");
-                    livroDiv.classList.add("livro-item");
+    } catch (error) {
+        console.error("Erro na requisição das estatísticas:", error);
+    }
+}
 
-                    livroDiv.innerHTML = `
-                        <div class="livro-capa">
-                            <img src="${livro.urlCapa}" alt="Capa do livro">
-                        </div>
-                        <div class="info-bloco">
-                            <span>${livro.titulo}</span>
-                            <span>${livro.autor}</span>
-                        </div>
-                    `;
-                    rankingContainer.appendChild(livroDiv);
-                });
-            } else {
-                console.error("Elemento 'livros-secundarios' não encontrado!");
-            }
-        })
-        .catch(error => console.error("Erro ao carregar estatísticas gerais:", error));
+function renderizarLivrosSecundarios(lista) {
+    const container = document.querySelector(".livros-secundarios");
+    if (!container) return;
+
+    container.innerHTML = ""; 
+    lista.forEach(livro => {
+        const div = document.createElement("div");
+        div.classList.add("livro-item");
+        div.innerHTML = `
+            <div class="livro-capa">
+                <img src="${livro.coverUrl}" alt="Capa de ${livro.title}">
+            </div>
+            <div class="info-bloco">
+                <p class="ranking-titulo">${livro.title}</p>
+                <p class="ranking-autor">${livro.author}</p>
+            </div>
+        `;
+        container.appendChild(div);
+    });
+}
+
+function renderizarRankingPaises(paises) {
+    const container = document.getElementById("rankingPaisesContainer");
+    if (!container || !paises || paises.length === 0) {
+        container.innerHTML = "<span>Nenhum dado disponível</span>";
+        return;
+    }
+
+    container.innerHTML = "";
+    paises.forEach((item, index) => {
+        const span = document.createElement("span");
+        span.style.display = "block"; // Faz um ficar embaixo do outro
+        span.style.fontSize = "0.9em"; // Um pouco menor para caber bem
+        span.innerHTML = `<strong>${index + 1}º ${item.country}</strong> (${item.count} livros)`;
+        container.appendChild(span);
+    });
 }
 
 document.addEventListener("DOMContentLoaded", mostrarEstatisticaGeral);
-
