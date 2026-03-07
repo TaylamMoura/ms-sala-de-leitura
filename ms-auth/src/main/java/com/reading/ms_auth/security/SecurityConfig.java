@@ -4,15 +4,14 @@ package com.reading.ms_auth.security;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.boot.actuate.autoconfigure.security.servlet.EndpointRequest;
 
-import java.util.List;
 
 @Configuration
 public class SecurityConfig {
@@ -26,15 +25,13 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(csrf -> csrf.disable())
-                .cors(cors -> cors.configurationSource(request -> {
-                    CorsConfiguration config = new CorsConfiguration();
-                    config.setAllowedOrigins(List.of("http://localhost:8080"));
-                    config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-                    config.setAllowedHeaders(List.of("Content-Type", "Authorization"));
-                    config.setAllowCredentials(true);
-                    return config;
-                }))
+                // 1. Desabilita o CORS no MS (O Gateway já cuidou disso!)
+                .cors(cors -> cors.disable())
+
                 .authorizeHttpRequests(authz -> authz
+                        // 2. Garante que qualquer requisição OPTIONS passe reto
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+
                         .requestMatchers(EndpointRequest.to("health")).permitAll()
                         .requestMatchers("/actuator/health").permitAll()
                         .requestMatchers("/usuarios/validate-token").permitAll()
