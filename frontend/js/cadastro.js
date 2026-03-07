@@ -1,9 +1,9 @@
+const GATEWAY_URL = 'http://localhost:8080';
 
 const formCadastro = document.getElementById("formCadastro");
-
 const inputSenha = document.getElementById("inputSenha");
-const mensagemSenha = document.getElementById("senhaMensagem");
 const inputConfirmarSenha = document.getElementById("inputConfirmarSenha");
+const mensagemSenha = document.getElementById("senhaMensagem");
 const mensagemConfirmaSenha = document.getElementById("mensagemConfirmaSenha");
 
 // VALIDAÇÃO DO CAMPO SENHA
@@ -44,31 +44,29 @@ inputConfirmarSenha.addEventListener("input", () => {
 formCadastro.addEventListener("submit", async (e) => {
     e.preventDefault(); 
 
-    const nome = document.getElementById("inputNome").value;
-    const dataNascimento = document.getElementById("inputDataNasc").value; 
-    console.log("data digitada: ", dataNascimento);
-    const email = document.getElementById("inputEmail").value;
-    const usuario = document.getElementById("inputNomeUsuario").value;
-    const senha = inputSenha.value;
+    const nomeHTML = document.getElementById("inputNome").value;
+    const dataNascimentoHTML = document.getElementById("inputDataNasc").value; 
+    console.log("data digitada: ", dataNascimentoHTML);
+    const emailHTML = document.getElementById("inputEmail").value;
+    const senhaHTML = inputSenha.value;
     const confirmarSenha = inputConfirmarSenha.value;
 
     //VERIFICAÇÃO SE AS SENHAS SÃO IGUAIS ANTES DE ENVIAR
-    if (senha !== confirmarSenha) {
+    if (senhaHTML !== confirmarSenha) {
         alert("As senhas não coincidem! Por favor, tente novamente.");
         return;
     }
 
     const dadosUsuario = {
-        nome,
-        dataNascimento,
-        email,
-        usuario,
-        senha,
+        name: nomeHTML,
+        birthDate: dataNascimentoHTML,
+        email: emailHTML,
+        password: senhaHTML
     };
 
     //ENVIO DO FORMULÁRIO
     try {
-        const response = await fetch("http://localhost:8080/usuarios", {
+        const response = await fetch(`${GATEWAY_URL}/usuarios`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -76,12 +74,21 @@ formCadastro.addEventListener("submit", async (e) => {
             body: JSON.stringify(dadosUsuario),
         });
 
-        if (response.ok) {
+        if (response.status === 201) {
             alert("Cadastro realizado com sucesso!");
             window.location.href = "inicio.html";
         } else {
-            const errorData = await response.json();
-            alert("Erro ao cadastrar: " + (errorData.message || "Erro desconhecido."));
+            // Primeiro verificamos se a resposta é realmente um JSON
+            const contentType = response.headers.get("content-type");
+            if (contentType && contentType.includes("application/json")) {
+                  const errorData = await response.json();
+                  alert("Erro ao cadastrar: " + (errorData.message || "Erro no servidor."));
+            } else {
+                        // Se não for JSON (como o erro 401 do Gateway), lemos como texto
+                   const errorText = await response.text();
+                   console.error("Erro do servidor (não JSON):", errorText);
+                   alert(`Erro ${response.status}: O servidor recusou a requisição.`);
+            }
         }
     } catch (error) {
         console.error("Erro na comunicação com o servidor:", error);
