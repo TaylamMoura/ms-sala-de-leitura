@@ -1,3 +1,15 @@
+
+
+const GATEWAY_URL = 'http://localhost:8080';
+
+function getAuthHeader(){
+    const token = localStorage.getItem('token');
+    return {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+    };
+}
+
 document.addEventListener("DOMContentLoaded", () => {
     exibirCapaLivro();
 });
@@ -5,13 +17,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
 //CAPTURAR ID DO LIVRO
 const urlParams = new URLSearchParams(window.location.search);
-const livroId = urlParams.get('id');
+const livroId = urlParams.get('bookId');
+const userId = localStorage.getItem('userId');
 
-if (livroId) {
-    console.log("Livro ID capturado: ", livroId);
-} else {
-    console.error("Erro: livroId não encontrado na URL.");
-}
 
 //CONTROLE DO CRONÔMETRO
 let cronometroAtivo = false;
@@ -55,7 +63,7 @@ function atualizarCronometro(){
 }
 
 function finalizarSessao(){
-    if(tempoDecorrido === 0) {
+    if(tempoDecorrido < 1000) {
         alert("Você não pode finalizar uma sessão sem tempo de leitura!");
         return;
     }
@@ -67,78 +75,64 @@ function finalizarSessao(){
 
 //BUSCAR A PÁGINA QUE USUÁRIO PAROU PARA FAZER A VERIFICAÇÃO
 async function buscarUltimaPagina(livroId) {
-    try{
-        const response = await fetch(`/sessao-leitura/ultima-pagina/${livroId}`);
-        if(!response.ok){
-            throw new Error("Erro ao buscar ultima página");
-        }
-        const ultimaPagina = await response.json();
-        return ultimaPagina;
-    } catch (error){
-        console.error("Erro ao busca última página: ", error);
+    try {
+        const response = await fetch(`${GATEWAY_URL}/sessao-leitura/ultima-pagina/${livroId}`, {
+            method: 'GET',
+            headers: getAuthHeader()
+        });
+        if (!response.ok) return 0;
+        
+        return await response.json();
+    } catch (error) {
+        console.error("Erro ao buscar última página:", error);
         return 0;
     }
 }
 
 
 //FUNÇÃO PARA ENVIAR DADOS AO BACK-END
-async function enviarSessaoLeitura(){
-    const urlParams = new URLSearchParams(window.location.search);
-    const livroId = urlParams.get("id");
+async function enviarSessaoLeitura() {
     const paginaInserida = parseInt(document.getElementById("inputPaginas").value, 10);
 
-    if(!paginaInserida || paginaInserida <= 0) {
-        alert("Atenção, insira um número de páginas válida.");
-        return;
-    } 
-
-    //Buscar a última página lida(se houver)
-    let ultimaPagina;
-    try{
-        ultimaPagina = await buscarUltimaPagina(livroId);
-    } catch(error){
-        console.error("Erro ao buscar a última página parada:", error);
-        alert("Erro ao validar a página inserida.");
+    if (!paginaInserida || paginaInserida <= 0) {
+        alert("Insira um número de página válido.");
         return;
     }
 
-    //Validar a entrada de páginas do usuário
+    const ultimaPagina = await buscarUltimaPagina(livroId);
+
     if (paginaInserida < ultimaPagina) {
-        alert(`A página inserida (${paginaInserida}) não pode ser menor que a última registrada (${ultimaPagina}).`);
+        alert(`A página inserida (${paginaInserida}) não pode ser menor que a última (${ultimaPagina}).`);
         return;
     }
 
-    //formatar o formato para enviar ao back-end
-    const horas = Math.floor(tempoDecorrido / 3600000);
-    const minutos =Math.floor((tempoDecorrido % 3600000) / 60000);
-    const segundos = Math.floor((tempoDecorrido % 60000) / 1000);
-    const tempoLeituraSegundos = (horas * 3600) + (minutos * 60) + segundos;
+    // Cálculo do tempo em segundos
+    const tempoLeituraSegundos = Math.floor(tempoDecorrido / 1000);
 
-    //Envio de dados ao backend
-    try{
-        const response = await fetch('/sessao-leitura/finalizar', {
+    // MONTAGEM DO DTO (De acordo com seu EndSessionDTO no Java)
+    const corpoRequisicao = {
+        userId: parseInt(userId),
+        bookId: parseInt(livroId),
+        readingTime: tempoLeituraSegundos,
+        lastPage: paginaInserida // Certifique-se que no Java o campo é 'lastPage'
+    };
+
+    try {
+        const response = await fetch(`${GATEWAY_URL}/sessao-leitura/finalizar`, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            credentials: 'include',
-            body: JSON.stringify({
-                livroId: parseInt(livroId),
-                tempoLeitura: tempoLeituraSegundos ,
-                paginasLidas: paginaInserida,
-            }),
+            headers: getAuthHeader(),
+            body: JSON.stringify(corpoRequisicao)
         });
 
-        if(response.ok){
-            fecharModal();
-            tempoDecorrido = 0;
-            atualizarCronometro();
-            window.location.href = `/meu-livro.html?id=${livroId}`;
-        }else {
-            alert('Erro ao finalizar sessão');
+        if (response.ok) {
+            alert("Sessão salva com sucesso!");
+            window.location.href = `meu-livro.html?bookId=${livroId}`;
+        } else {
+            const erro = await response.json();
+            alert("Erro ao finalizar sessão: " + (erro.message || "Verifique os dados."));
         }
     } catch (error) {
-        console.error('Erro na requisição: ', error);
+        console.error('Erro na requisição:', error);
     }
 }
 
@@ -163,21 +157,20 @@ function fecharModal(){
 
 
 async function exibirCapaLivro() {
+    if (!livroId) return;
     try {
-        const id = livroId;
-        if (id) {
-            const response = await fetch(`http://localhost:8080/exibirDados/${id}`);
-            if (!response.ok) {
-                throw new Error("Erro ao buscar os dados do livro");
-            }
-
+        const response = await fetch(`${GATEWAY_URL}/livros/exibirDados/${livroId}`, {
+            headers: getAuthHeader()
+        });
+        if (response.ok) {
             const livro = await response.json();
-            const imgCapa = document.getElementById('capaLivro');
-            imgCapa.src = livro.urlCapa;
-        } else {
-            console.error("ID do livro não encontrado.");
+            document.getElementById('capaLivro').src = livro.urlCapa;
         }
     } catch (error) {
-        console.error("Erro ao exibir a capa do livro:", error);
+        console.error("Erro ao exibir a capa:", error);
     }
 }
+
+document.addEventListener("DOMContentLoaded", () => {
+    exibirCapaLivro();
+});
