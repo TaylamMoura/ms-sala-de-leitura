@@ -1,7 +1,18 @@
+const GATEWAY_URL = 'http://localhost:8080';
+
+//FUNÇÃO AUXILIAR PARA HEADERS
+function getAuthHeader( ){
+    const token = localStorage.getItem('token');
+    return{
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+    };
+}
+
 //FUNÇÃO PARA OBTER O ID DO LIVRO
 function obterLivroId() {
   const urlParams = new URLSearchParams(window.location.search);
-  return urlParams.get('livroId');
+  return urlParams.get('bookId');
 }
 
 
@@ -30,35 +41,49 @@ document.addEventListener("DOMContentLoaded", carregarDadosLivro);
 
 
 // Função para carregar estatísticas do LIVRO
-function mostrarEstatisticasLivro() {
-    const livroId = obterLivroId();
-
-    if(!livroId) {
+async function mostrarEstatisticasLivro() {
+    const bookId = obterLivroId();
+    if(!bookId) {
         console.error("ID não fornecido na URL");
         return;
     }
 
-    fetch(`/estatistica-livro?livroId=${livroId}`)
-        .then(response => {
-            if(!response.ok){
-                throw new Error(`Erro HTTP: ${response.status}`);
-            }
-            return response.json();
-        })
-        .then(data => {
-            document.getElementById("diasLidos").textContent = data.diasLidos;
-            document.getElementById("mediaPaginasPorDia").textContent = data.mediaPaginasPorDia;
-            document.getElementById("mediaTempoSessao").textContent = formatarHorasMinutos(data.mediaTempoSessao);
-            document.getElementById("tituloLivro").textContent = localStorage.getItem("tituloLivro") || data.titulo;
-            document.getElementById("autorLivro").textContent = localStorage.getItem("autorLivro") || data.autor;
-            document.getElementById("paginasLivro").textContent = localStorage.getItem("paginasLivro") || data.paginas;
-            document.getElementById("anoPublicacao").textContent = localStorage.getItem("anoPublicacao") || data.anoPublicacao;
+    try{
+        const respLivro = await fetch(`${GATEWAY_URL}/livros/exibirDados/${bookId}`, {
+            headers: getAuthHeader()
+        });
 
-            const capaLivro = localStorage.getItem("capaLivro") || data.urlCapa;
-            document.getElementById("capaLivro").src = capaLivro;
+        if(!respLivro.ok){
+            const livro = await respLivro.json();
+            document.getElementById("tituloLivro").textContent = livro.title ;
+            document.getElementById("autorLivro").textContent = livro.author ;
+            document.getElementById("paginasLivro").textContent = livro.pages;
+            document.getElementById("anoPublicacao").textContent = livro.publicationYear;
+            document.getElementById("capaLivro").src = livro.coverUrl;
+            document.getElementById("country").textContent = livro.country || "Não Informado";
+    
+        }
+
+        const respStats = await fetch(`${GATEWAY_URL}/estatisticas/livro/${bookId}`, {
+            headers: getAuthHeader()
+        });
+
+        if (respStats.ok) {
+            const data = await respStats.json();
+
+            document.getElementById("diasLidos").textContent = data.daysRead || 0;
+            document.getElementById("mediaPaginasPorDia").textContent = 
+                data.averagePagesPerDay ? data.averagePagesPerDay.toFixed(1) : "0";
             
+            // O Java envia a média de tempo em segundos, formatamos aqui
+            document.getElementById("mediaTempoSessao").textContent = formatarTempo(data.averageSessionTime);
+        } else if (respStats.status === 401) {
+            window.location.href = 'inicio.html';
+        }
 
-        })
-        .catch(error => console.error("Erro ao carregar estatísticas do livro:", error));
+    } catch (error) {
+        console.error("Erro ao carregar dados da página:", error);
+    }
 }
+
 document.addEventListener("DOMContentLoaded", mostrarEstatisticasLivro);
