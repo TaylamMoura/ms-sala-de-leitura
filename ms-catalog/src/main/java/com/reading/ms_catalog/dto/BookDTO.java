@@ -3,7 +3,7 @@ package com.reading.ms_catalog.dto;
 import com.reading.ms_catalog.entity.Book;
 
 public record BookDTO(
-        Long id,
+        Long bookId,
         String title,
         String author,
         int pages,
