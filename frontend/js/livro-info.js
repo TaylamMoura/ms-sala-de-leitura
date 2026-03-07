@@ -1,75 +1,84 @@
-//FUNÇÃO PARA OBTER ID DO LIVRO DA URL
-function obterIdLivro() {
-  const urlParams = new URLSearchParams(window.location.search);
-  return urlParams.get('id');
+const GATEWAY_URL = 'http://localhost:8080'; 
+
+const bookId = new URLSearchParams(window.location.search).get('bookId');
+const userId = localStorage.getItem('userId');
+
+function getAuthHeader(){
+  return{
+    'Content-Type': 'application/json',
+    'Authorization': `Bearer ${localStorage.getItem('token')}`
+  };
 }
 
 
-//FUNÇÃO PARA BUSCAR AS INFORMAÇÕES DO LIVRO PELO ID
-async function buscarLivroPorId(id) {
-      try {
-        const response = await fetch(`/exibirDados/${id}`, {
-            method: 'GET',
-            headers:{
-                 'Content-Type': 'application/json'
-            },
-            credentials: 'include',
+//FUNÇÃO PARA ATUALIZAR A BARRA DE PROGRESSO
+
+//INFO DEVE VIM DE SESSION ---> VOLTAR AQUI
+async function atualizarBarraProgresso() {
+    if (!bookId) return;
+
+    try {
+        // 1. Busca a última página lida no ms-sessions via Gateway
+        const responseSession = await fetch(`${GATEWAY_URL}/sessao-leitura/ultima-pagina/${bookId}`, {
+            headers: getAuthHeader()
         });
 
-        if (!response.ok) {
-          throw new Error('Erro ao buscar informações do livro');
+        if (!responseSession.ok) return;
+        const paginaFinal = await responseSession.json();
+
+        // 2. Busca o total de páginas no ms-catalog via Gateway
+        const responseLivro = await fetch(`${GATEWAY_URL}/livros/exibirDados/${bookId}/${userId}`, {
+            headers: getAuthHeader()
+        });
+
+        if (!responseLivro.ok) return;
+        const livro = await responseLivro.json();
+        const totalPaginas = livro.pages;
+
+        // Atualiza os elementos na tela com segurança
+        if (document.getElementById("paginaAtual"))
+            document.getElementById("paginaAtual").innerText = paginaFinal;
+
+        if (document.getElementById("totalPaginas"))
+            document.getElementById("totalPaginas").innerText = totalPaginas;
+
+        if (document.getElementById("progresso")) {
+            const porcentagem = (paginaFinal / totalPaginas) * 100;
+            document.getElementById("progresso").style.width = porcentagem + "%";
         }
-        return await response.json();
-      } catch (error) {
-        console.error('Erro ao buscar informações do livro:', error);
-        throw error;
-      }
+
+    } catch (error) {
+        console.error("Erro ao atualizar progresso:", error);
     }
+}
 
 
 //FUNÇÃO PARA EXIBIR AS INFORMAÇÕES DO LIVRO NA PÁGINA
 async function exibirInformacoesLivro() {
   try {
-    const id = obterIdLivro();
-    if (id) {
-      const livro = await buscarLivroPorId(id);
-      if (livro) {
-        document.getElementById('capaLivro').src = livro.urlCapa;
-        document.getElementById('tituloLivro').innerHTML = ` ${livro.titulo}`;
-        document.getElementById('autorLivro').innerHTML = ` ${livro.autor}`;
-        document.getElementById('paginasLivro').innerHTML = ` ${livro.paginas}`;
-        document.getElementById('anoPublicacao').innerHTML = ` ${livro.anoPublicacao}`;
+        const response = await fetch(`${GATEWAY_URL}/livros/exibirDados/${bookId}/${userId}`, {
+            method: 'GET',
+            headers: getAuthHeader()
+        });
 
-        //Salvar a capa e informação do livro no storage para resgatar em estatistica-livro
-        localStorage.setItem("capaLivro", livro.urlCapa);
-        localStorage.setItem("tituloLivro", livro.titulo);
-        localStorage.setItem("autorLivro", livro.autor);
-        localStorage.setItem("paginasLivro", livro.paginas);
-        localStorage.setItem("anoPublicacao", livro.anoPublicacao);
-
-        
-        //BARRA DE PROGRESSO
-        const paginaAtual = livro.paginaAtual || 0;
-        const totalPaginas = livro.paginas;
-
-        document.getElementById('paginaAtual').textContent = paginaAtual;
-        document.getElementById('totalPaginas').textContent = totalPaginas;
-
-        const progressoPercentual = totalPaginas > 0 ? (paginaAtual / totalPaginas) * 100 : 0;
-        document.getElementById('progresso').style.width = `${progressoPercentual}%`;
-      } else {
-        document.getElementById('livro-informacao').innerHTML = '<p>Livro não encontrado.</p>';
-      }
-    } else {
-      document.getElementById('livro-informacao').innerHTML = '<p>ID do livro não encontrado.</p>';
+        if (response.ok) {
+            const livro = await response.json();
+            
+            document.getElementById('capaLivro').src = livro.coverUrl;
+            document.getElementById('tituloLivro').innerText = livro.title;
+            document.getElementById('autorLivro').innerText = livro.author;
+            document.getElementById('paginasLivro').innerText = livro.pages;
+            document.getElementById('anoPublicacao').innerText = livro.publicationYear;
+            document.getElementById('paisOrigem').innerText = livro.country;
+            
+            //VER AQUI DEPOIS
+            // Atualiza barra de progresso (lógica do ms-session)
+            atualizarBarraProgresso(bookId, livro.pages);
+        }
+    } catch (error) {
+        console.error("Erro ao carregar detalhes:", error);
     }
-  } catch (error) {
-    console.error('Erro ao exibir as informações do livro:', error);
-  }
 }
-
-// Chama a função para exibir as informações do livro ao carregar a página
-window.onload = exibirInformacoesLivro;
 
 
 // MODAL DE EDIÇÃO
@@ -86,37 +95,27 @@ function fecharFormularioEdicao() {
 
 //FUNÇÃO PARA ENVIAR A EDIÇÃO DO LIVRO AO SERVIDOR
 async function enviarEdicaoLivro() {
-  const id = obterIdLivro();
-  const paginas = document.getElementById('inputPaginas').value;
-  const anoPublicacao = document.getElementById('inputAnoPublicacao').value;
   const dadosAtualizados = {
-    paginas: paginas,
-    anoPublicacao: anoPublicacao
-  };
+        pages: parseInt(document.getElementById('inputPaginas').value),
+        publicationYear: parseInt(document.getElementById('inputAnoPublicacao').value)
+    };
 
-  try {
-    const response = await fetch(`/editarLivro/${id}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      credentials: 'include',
-      body: JSON.stringify(dadosAtualizados)
-    });
+    try {
+        const response = await fetch(`${GATEWAY_URL}/livros/editarLivro/${bookId}/${userId}`, {
+            method: 'PUT',
+            headers: getAuthHeader(),
+            body: JSON.stringify(dadosAtualizados)
+        });
 
-    if (!response.ok) {
-      throw new Error('Erro ao atualizar o livro');
+        if (response.ok) {
+            exibirInformacoesLivro(); // Recarrega os dados na tela
+            fecharFormularioEdicao();
+        }
+    } catch (error) {
+        console.error("Erro ao editar:", error);
     }
-
-
-    //ATUALIZA AS INFORMAÇÕES DO LIVRO APÓS A EDIÇÃO
-    exibirInformacoesLivro();
-    document.getElementById('formulario-edicao').style.display = 'none';
-  } catch (error) {
-    console.error('Erro ao atualizar o livro:', error);
-    alert('Erro ao atualizar o livro.');
   }
-}
+
 
 // FUNÇÃO PARA CANCELAR EDIÇÃO DO LIVRO
 function cancelarEdicao() {
@@ -137,15 +136,11 @@ function fecharConfirmacaoExclusao() {
 
 // FUNÇÃO PARA EXCLUIR LIVRO APÓS CONFIRMAÇÃO
 async function excluirLivroConfirmado() {
-  const id = obterIdLivro();
 
   try {
-    const response = await fetch(`/excluirLivro/${id}`, {
+    const response = await fetch(`${GATEWAY_URL}/livros/excluirLivro/${bookId}/${userId}`, {
       method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      credentials: 'include',
+      headers: getAuthHeader()
     });
 
     if (!response.ok) {
@@ -164,10 +159,10 @@ async function excluirLivroConfirmado() {
   }
 }
 
+
 function iniciarSessao() {
-  const livroId = obterIdLivro();
-  if(livroId){
-    window.location.href = `sessaoLeitura.html?id=${livroId}`;
+  if(bookId){
+    window.location.href = `sessaoLeitura.html?bookId=${bookId}`;
   } else{
     alert('Erro: livro nao encontrado.');
   }
@@ -177,10 +172,8 @@ function iniciarSessao() {
 
 //FUNÇÃO PARA CARREGAR PAGE ESTATISTICA-LIVRO
 function redirecionarEstatisticasLivro() {
-  const livroId = obterIdLivro();
-
-  if(livroId){
-      window.location.href = `estatistica-livro.html?livroId=${livroId}`;
+  if(bookId){
+      window.location.href = `estatistica-livro.html?bookId=${bookId}`;
   } else {
     console.error("ID não encontrado na URL");
   }
@@ -188,25 +181,13 @@ function redirecionarEstatisticasLivro() {
 }
 
 
-//FUNÇÃO PARA ATUALIZAR A BARRA DE PROGRESSO
-setInterval(async function() {
-    const livroId = obterIdLivro();
 
-    try {
-        // Faz a requisição para obter a última página lida
-        const response = await fetch(`/sessao-leitura/ultima-pagina/${livroId}`);
-        const paginaFinal = await response.json();
 
-        // Obtém o total de páginas do livro
-        const livroResponse = await fetch(`/exibirDados/${livroId}`);
-        const livro = await livroResponse.json();
-        const totalPaginas = livro.paginas;
+// Inicia a atualização automática a cada 30 segundos
+setInterval(atualizarBarraProgresso, 30000);
 
-        // Atualiza os elementos na tela
-        document.getElementById("paginaAtual").innerText = paginaFinal;
-        document.getElementById("totalPaginas").innerText = totalPaginas;
-        document.getElementById("progresso").style.width = (paginaFinal / totalPaginas) * 100 + "%";
-    } catch (error) {
-        console.error("Erro ao buscar progresso:", error);
-    }
-}, 30000);
+// Chama uma vez ao carregar para não esperar 30s
+window.onload = function(){
+  exibirInformacoesLivro();
+  atualizarBarraProgresso();
+}
