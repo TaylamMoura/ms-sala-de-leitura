@@ -4,10 +4,8 @@ server:
 spring:
   application:
     name: ms-gateway
-
   main:
     web-application-type: reactive
-
   cloud:
     consul:
       host: localhost
@@ -39,8 +37,9 @@ management:
     web:
       exposure:
         include: health
-
+  endpoint:
+    health:
+      show-details: always
 
 jwt:
   secret: ${JWT_SECRET}
-
