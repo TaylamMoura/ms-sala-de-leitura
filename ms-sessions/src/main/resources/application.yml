@@ -20,8 +20,8 @@ spring:
       discovery:
         enabled: true
         register: true
-        hostname: host.docker.internal
-        prefer-ip-address: false
+        #hostname: host.docker.internal
+        prefer-ip-address: true
         health-check-path: /actuator/health
         health-check-interval: 15s
         register-health-check: true
