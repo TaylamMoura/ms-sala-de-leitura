@@ -1,10 +1,12 @@
+const GATEWAY_URL = 'http://localhost:8080';
+
 function abrirFormularioCadastro() {
     window.location.href = 'cadastro.html';
 }
 
 //FUNÇÃO PARA ABRIR MODAL DE LOGIN
 function abrirFormularioLogin() {
-    const modalLogin = document.getElementById("formulario-login");
+    const modalLogin = document.getElemmsentById("formulario-login");
     modalLogin.style.display = 'block';
     modalLogin.setAttribute("aria-hidden", "false");
 }
@@ -16,39 +18,11 @@ function fecharFormularioLogin(){
     modalLogin.setAttribute("aria-hidden", "true");
 }
 
-//FUNÇÃO PARA VERIFICAR AUTENTICAÇÃO
-function verificarAutenticacao() {
-    const token = localStorage.getItem('token');
-
-    if (!token) {
-        alert('Você precisa fazer login para acessar esta página.');
-        window.location.href = 'inicio.html';
-        return;
-    }
-
-    fetch('http://localhost:8080/validate-token', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-        }
-    })
-    .then((resposta) => {
-        if (!resposta.ok) {
-            alert('Sessão expirada. Faça login novamente.');
-            window.location.href = 'inicio.html';
-        }
-    })
-    .catch((error) => {
-        console.error('Erro ao validar o token:', error);
-        alert('Erro de autenticação.');
-        window.location.href = 'inicio.html';
-    });
-}
-
 
 //FUNÇÃO DE LOGIN
-async function fazerLogin(){
+async function fazerLogin(e){
+    e.preventDefault();
+    
     const userEmail = document.getElementById('inputLogin').value;
     const userSenha = document.getElementById('inputSenha').value;
     
@@ -58,57 +32,35 @@ async function fazerLogin(){
     }
     //ENVIO DE DADOS AO SERVIDOR
     try{
-        const response = await fetch('http://localhost:8080/usuarios/login', {
+        const response = await fetch(`${GATEWAY_URL}/usuarios/login`, {
               method:'POST',
-              credentials: 'include',
               headers: {
                 'Content-Type': 'application/json'
               },
               body: JSON.stringify({
                 email: userEmail,
-                senha: userSenha
+                password: userSenha
               })
             });
 
-        if (response.ok) {
+        if (response.status === 200) {
               const dados = await response.json();
+              localStorage.setItem('token', dados.token);
+              localStorage.setItem('userId', dados.userId);
               window.location.href = 'index.html';
+
             } else {
-              const erro =  await response.json();
-              alert(erro.mensagem);
+               const contentType = response.headers.get("content-type");
+               if(contentType && contentType.includes("application/json")){
+                    const erro =  await response.json();
+                    alert(erro.mensagem);
+               } else {
+                    const erroText = await response.text();
+                    alert(erroText)
+               }
             }
-          } catch(error) {
-            console.error('Erro na requisição: ', error);
-            alert('Erro ao conectar com o servidor');
-          }
-}
-
-
-async function acessarRecursoProtegido() {
-    const token = localStorage.getItem("token");
-
-    if (!token) {
-        alert('Você precisa fazer login para acessar este recurso.');
-        return;
-    }
-
-    try {
-        const resposta = await fetch("http://localhost:8080/protected-endpoint", {
-            method: "GET",
-            headers: {
-                "Authorization": `Bearer ${token}`
-            }
-        });
-
-        if (resposta.ok) {
-            const dados = await resposta.json();
-            console.log(dados);
-        } else {
-            console.error('Erro na requisição:', await resposta.text());
-            alert('Você não tem permissão para acessar este recurso.');
-        }
-    } catch (error) {
-        console.error('Erro ao conectar:', error);
+    } catch(error){
+        console.error('Erro na requisição: ', error);
+        alert('Erro ao conectar com o servidor');
     }
 }
-
