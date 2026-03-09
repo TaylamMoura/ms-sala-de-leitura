@@ -6,7 +6,7 @@ function abrirFormularioCadastro() {
 
 //FUNÇÃO PARA ABRIR MODAL DE LOGIN
 function abrirFormularioLogin() {
-    const modalLogin = document.getElemmsentById("formulario-login");
+    const modalLogin = document.getElementById("formulario-login");
     modalLogin.style.display = 'block';
     modalLogin.setAttribute("aria-hidden", "false");
 }
