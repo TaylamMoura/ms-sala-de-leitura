@@ -97,7 +97,8 @@ function fecharFormularioEdicao() {
 async function enviarEdicaoLivro() {
   const dadosAtualizados = {
         pages: parseInt(document.getElementById('inputPaginas').value),
-        publicationYear: parseInt(document.getElementById('inputAnoPublicacao').value)
+        publicationYear: parseInt(document.getElementById('inputAnoPublicacao').value),
+        country: document.getElementById('inputPaisOrigem').value
     };
 
     try {
