@@ -34,7 +34,9 @@ public class SessionService {
     // Finalizar Sessão
     @Transactional
     public ReadingSession endSession(EndSessionDTO dto ) {
-        int startPage = getLastReadPage(dto.bookId());
+        int startPage = sessionsRepository.findTopByUserIdAndBookIdOrderByEndTimeDesc(dto.userId(), dto.bookId())
+                .map(ReadingSession::getEndPage)
+                .orElse(0);
 
         ReadingSession session = new ReadingSession();
         session.setUserId(dto.userId());
@@ -42,8 +44,9 @@ public class SessionService {
         session.setStartPage(startPage);
         session.setEndPage(dto.lastPage());
         session.setReadingTime(dto.readingTime());
-        session.setStartTime(LocalDateTime.now());
-        session.setEndTime(session.getStartTime().plusSeconds(dto.readingTime()));
+        LocalDateTime timeNow = LocalDateTime.now();
+        session.setEndTime(timeNow);
+        session.setStartTime(timeNow.minusSeconds(dto.readingTime()));
 
         return sessionsRepository.save(session);
     }
