@@ -31,7 +31,7 @@ public class BookController {
 
 
     @GetMapping("/pesquisarLivro")
-    public BookDTO searchBook(@RequestParam String title) {
+    public List<BookDTO> searchBook(@RequestParam String title) {
         return bookService.searchByTitle(title);
     }
 
