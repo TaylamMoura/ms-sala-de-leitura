@@ -11,15 +11,15 @@ import jakarta.validation.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.GetMapping;
 
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class BookService {
-
-    private static final String BASE_URL = "https://www.googleapis.com/books/v1/volumes?q=";
 
     private final APIConnection apiConnection;
     private final BookRepository repository;
@@ -30,7 +30,9 @@ public class BookService {
         this.repository = repository;
     }
 
-    public BookDTO searchByTitle(String bookTitle) {
+
+    public List<BookDTO> searchByTitle(String bookTitle) {
+        List<BookDTO> listBooks = new ArrayList<>();
         try {
             String titleEncoded = URLEncoder.encode("intitle:" + bookTitle, StandardCharsets.UTF_8.toString());
             String jsonResponse = apiConnection.booksJson(titleEncoded);
@@ -39,42 +41,49 @@ public class BookService {
             JsonArray items = jsonObject.getAsJsonArray("items");
 
             if (items != null && !items.isEmpty()) {
-                JsonObject item = items.get(0).getAsJsonObject();
+                for(int i = 0; i < Math.min(items.size(), 12); i++){
+                    try {
+                        JsonObject item = items.get(i).getAsJsonObject();
+                        JsonObject volumeInfo = item.getAsJsonObject("volumeInfo");
 
-                JsonObject volumeInfo = item.getAsJsonObject("volumeInfo");
-                JsonObject saleInfo = item.getAsJsonObject("saleInfo");
+                        String title = volumeInfo.has("title") ? volumeInfo.get("title").getAsString() : "Título Desconhecido";
 
-                String title = volumeInfo.get("title").getAsString();
-                String author = volumeInfo.getAsJsonArray("authors").get(0).getAsString();
-                int pageCount = volumeInfo.get("pageCount").getAsInt();
-                String thumbnail = volumeInfo.getAsJsonObject("imageLinks").get("thumbnail").getAsString();
-                String publishedDate = volumeInfo.get("publishedDate").getAsString();
-                int year = publishedDate != null ? Integer.parseInt(publishedDate.split("-")[0]) : 0;
-                String country = saleInfo != null && saleInfo.has("country") ? saleInfo.get("country").getAsString() : "N/A";
+                        String author = "Autor desconhecido";
+                        if (volumeInfo.has("authors")) {
+                            author = volumeInfo.getAsJsonArray("authors").get(0).getAsString();
+                        }
 
-                return new BookDTO(null, title, author, pageCount, thumbnail, year, false, country, null);
+                        int pageCount = volumeInfo.has("pageCount") ? volumeInfo.get("pageCount").getAsInt() : 0;
 
-            } else {
-                System.out.println("Livro não encontrado. Tente outro título!");
-                return null;
+                        String thumbnail = "https://via.placeholder.com/150x225?text=Sem+Capa";
+                        if (volumeInfo.has("imageLinks")) {
+                            thumbnail = volumeInfo.getAsJsonObject("imageLinks").get("thumbnail").getAsString();
+                        }
+
+                        String publishedDate = volumeInfo.has("publishedDate") ? volumeInfo.get("publishedDate").getAsString() : "0000";
+                        int year = Integer.parseInt(publishedDate.split("-")[0]);
+
+                        listBooks.add(new BookDTO(null, title, author, pageCount, thumbnail, year, false, "N/A", null));
+                    } catch (Exception e) {
+                        continue;
+                    }
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
-            return null;
         }
+        return listBooks;
     }
 
 
     @Transactional
     public void saveBook(BookDTO bookDTO, Long userId){
-
         String urlCapa = bookDTO.coverUrl();
-
         if (urlCapa == null || urlCapa.trim().isEmpty()){
             urlCapa = "https://via.placeholder.com/150";
         }
 
-        Book book =new Book(
+        Book book = new Book(
                 null,
                 bookDTO.title(),
                 bookDTO.author(),
@@ -85,11 +94,11 @@ public class BookService {
                 false,
                 bookDTO.country()
         );
-
         repository.save(book);
     }
 
 
+    @Transactional
     public List<BookDTO> listSavedBooks(Long userId){
         List<Book> books = repository.findByUserId(userId);
         return books.stream().map(BookDTO::new).toList();
@@ -99,8 +108,7 @@ public class BookService {
     @Transactional
     public void deleteBook(Long bookId, Long userId){
         Book book = repository.findByBookIdAndUserId(bookId, userId)
-                .orElseThrow(() -> new ValidationException("Livro não encontrado"));
-
+                .orElseThrow(() -> new RuntimeException("Livro não encontrado"));
         repository.delete(book);
     }
 
@@ -108,7 +116,7 @@ public class BookService {
     @Transactional
     public Book updateBook(Long bookId, BookUpdate bookUpdate, Long userId) {
         Book book = repository.findByBookIdAndUserId(bookId, userId)
-                .orElseThrow(() -> new ValidationException("Livro não encontrado"));
+                .orElseThrow(() -> new RuntimeException("Livro não encontrado"));
 
         book.update(bookUpdate);
         repository.save(book);
@@ -118,7 +126,7 @@ public class BookService {
     @Transactional
     public void markAsFinished(Long bookId, Long userId){
         Book book = repository.findByBookIdAndUserId(bookId, userId)
-                .orElseThrow(() -> new ValidationException("Livro não encontrado"));
+                .orElseThrow(() -> new RuntimeException("Livro não encontrado"));
 
         book.setFinished(true);
         repository.save(book);
@@ -127,7 +135,7 @@ public class BookService {
 
     public BookDTO getBookDetails(Long bookId, Long userId) {
         Book book = repository.findByBookIdAndUserId(bookId, userId)
-                .orElseThrow(()-> new ValidationException("Livro não encontrado"));
-        return  new BookDTO(book);
+                .orElseThrow(()-> new RuntimeException("Livro não encontrado"));
+        return new BookDTO(book);
     }
 }
