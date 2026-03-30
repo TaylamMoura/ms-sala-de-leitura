@@ -13,28 +13,30 @@ import java.util.Optional;
 public interface StatisticsRepository extends JpaRepository<ReadingSession, Long> {
 
     // Calcula quantos dias levou para finalizar o livro
-    @Query(value = "SELECT COALESCE(TIMESTAMPDIFF(DAY, MIN(s.start_time), MAX(s.end_time)), 0) " +
-            "FROM reading_sessions s WHERE s.book_id = :bookId AND s.user_id = :userId", nativeQuery = true)
+    @Query(value = "SELECT COALESCE(EXTRACT(DAY FROM (MAX(s.end_time) - MIN(s.start_time))), 0) " +
+            "FROM sessions s WHERE s.book_id = :bookId AND s.user_id = :userId", nativeQuery = true)
     Optional<Integer> calculateDaysToFinishBook(@Param("bookId") Long bookId, @Param("userId") Long userId);
 
+
     // Calcula a média de páginas lidas por dia, evitando divisão por zero
-    @Query(value = "SELECT COALESCE(SUM(s.end_page - s.start_page) / NULLIF(TIMESTAMPDIFF(DAY, MIN(s.start_time), MAX(s.end_time)), 0), 0) " +
-            "FROM reading_sessions s WHERE s.book_id = :bookId AND s.user_id = :userId", nativeQuery = true)
+    @Query(value = "SELECT COALESCE(SUM(s.end_page - s.start_page) / NULLIF(EXTRACT(DAY FROM (MAX(s.end_time) - MIN(s.start_time))), 0), 0) " +
+            "FROM sessions s WHERE s.book_id = :bookId AND s.user_id = :userId", nativeQuery = true)
     Optional<Double> calculateAveragePagesPerDay(@Param("bookId") Long bookId, @Param("userId") Long userId);
 
-    // Calcula a média de tempo das sessões de leitura
-    @Query(value = "SELECT COALESCE(AVG(s.reading_time) / 3600, 0) FROM reading_sessions s WHERE s.book_id = :bookId AND s.user_id = :userId", nativeQuery = true)
-    Optional<Double> calculateAverageSessionTime(@Param("bookId") Long bookId, @Param("userId") Long userId);
 
+    // Calcula a velocidade de leitura (Páginas por Hora)
+    @Query(value = "SELECT COALESCE(SUM(s.end_page - s.start_page) / (NULLIF(SUM(s.reading_time), 0) / 3600.0), 0) " +
+            "FROM sessions s WHERE s.book_id = :bookId AND s.user_id = :userId", nativeQuery = true)
+    Optional<Double> calculateReadingSpeed(@Param("bookId") Long bookId, @Param("userId") Long userId);
 
     //Retorna os segundos para ser convertido em Total de horas lidas no service -- evita erros de conversão no SQL
-    @Query("SELECT COALESCE(SUM(s.readingTime), 0) FROM reading_sessions s WHERE s.userId = :userId")
+    @Query(value = "SELECT COALESCE(SUM(s.reading_time), 0) " +
+            "FROM sessions s WHERE s.user_id = :userId", nativeQuery = true)
     Long totalSecondsReadByUser(@Param("userId") Long userId);
 
 
     // Total de PÁGINAS lidas em todas as sessões
-    @Query("SELECT COALESCE(SUM(s.endPage - s.startPage), 0) FROM reading_sessions s WHERE s.userId = :userId")
-    int totalPagesReadByUser(@Param("userId") Long userId);
-
-
+    @Query(value = "SELECT COALESCE(SUM(s.end_page - s.start_page), 0) " +
+            "FROM sessions s WHERE s.user_id = :userId", nativeQuery = true)
+    Long totalPagesReadByUser(@Param("userId") Long userId);
 }
