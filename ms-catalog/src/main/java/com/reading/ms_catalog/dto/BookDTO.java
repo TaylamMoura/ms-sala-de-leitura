@@ -11,9 +11,10 @@ public record BookDTO(
         int publicationYear,
         boolean finished,
         String country,
-        Long userId) {
+        Long userId,
+        Integer lastPage) {
 
-    public BookDTO(Book book) {
+    public BookDTO(Book book, Integer lastPage) {
         this(
                 book.getBookId(),
                 book.getTitle(),
@@ -23,7 +24,8 @@ public record BookDTO(
                 book.getPublicationYear(),
                 book.getFinished(),
                 book.getCountry(),
-                book.getUserId()
+                book.getUserId(),
+                lastPage
         );
     }
 
