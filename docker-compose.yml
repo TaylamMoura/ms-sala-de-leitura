@@ -77,22 +77,42 @@ services:
       dockerfile: Dockerfile
     container_name: ms-sessions
 
-  # 6. API Gateway (Não será iniciado agora)
+  # 6. API Gateway
   ms-gateway:
     build:
       context: ./ms-gateway
       dockerfile: Dockerfile
     container_name: ms-gateway
     ports:
-      - "8000:8000"
+      - "8080:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - SPRING_CLOUD_CONSUL_HOST=consul-server # Avisa ao Gateway que o Consul está no container
+      - SPRING_CLOUD_CONSUL_PORT=8500
+      - JWT_SECRET=${JWT_SECRET} # Repassando a variável de ambiente
+    deploy: # Adicionando os limitadores como você pediu
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+        reservations:
+          cpus: '0.25'
+          memory: 256M
+    depends_on:
+      - consul-server
+      - ms-auth
+      - ms-catalog
+      - ms-sessions
 
   # 7. Frontend (Nginx)
   frontend:
     build:
       context: ./frontend # Onde está seu Dockerfile e arquivos
-    container_name: leitura-frontend
+    container_name: frontend
     ports:
       - "8085:80"
+    volumes:
+      - ./frontend/http:/usr/share/nginx/html
     restart: always
     deploy:
       resources:
