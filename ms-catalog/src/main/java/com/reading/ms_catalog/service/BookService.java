@@ -63,7 +63,7 @@ public class BookService {
                         String publishedDate = volumeInfo.has("publishedDate") ? volumeInfo.get("publishedDate").getAsString() : "0000";
                         int year = Integer.parseInt(publishedDate.split("-")[0]);
 
-                        listBooks.add(new BookDTO(null, title, author, pageCount, thumbnail, year, false, "N/A", null));
+                        listBooks.add(new BookDTO(null, title, author, pageCount, thumbnail, year, false, "N/A", null, null));
                     } catch (Exception e) {
                         continue;
                     }
@@ -101,7 +101,9 @@ public class BookService {
     @Transactional
     public List<BookDTO> listSavedBooks(Long userId){
         List<Book> books = repository.findByUserId(userId);
-        return books.stream().map(BookDTO::new).toList();
+        return books.stream().map(book -> {
+            return new BookDTO(book, null);
+        }).toList();
     }
 
 
@@ -136,6 +138,6 @@ public class BookService {
     public BookDTO getBookDetails(Long bookId, Long userId) {
         Book book = repository.findByBookIdAndUserId(bookId, userId)
                 .orElseThrow(()-> new RuntimeException("Livro não encontrado"));
-        return new BookDTO(book);
+        return new BookDTO(book, null);
     }
 }
