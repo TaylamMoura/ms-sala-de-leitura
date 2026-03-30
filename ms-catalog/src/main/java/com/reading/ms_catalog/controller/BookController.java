@@ -62,7 +62,7 @@ public class BookController {
         Book book = bookRepository.findByBookIdAndUserId(bookId, userId)
                 .orElseThrow(() -> new ValidationException("Livro não encontrado"));
 
-        BookDTO bookDTO = new BookDTO(book);
+        BookDTO bookDTO = new BookDTO(book, null);
 
         return ResponseEntity.ok(bookDTO);
     }
@@ -92,7 +92,8 @@ public class BookController {
                 bookToUpdate.getPublicationYear(),
                 bookToUpdate.getFinished(),
                 bookToUpdate.getCountry(),
-                bookToUpdate.getUserId()
+                bookToUpdate.getUserId(),
+                null
         );
         return ResponseEntity.ok(bookDTO);
     }
