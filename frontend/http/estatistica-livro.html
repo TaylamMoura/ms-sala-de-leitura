@@ -3,84 +3,150 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../css/styles.css">
-    <link rel="stylesheet" href="../css/estatistica-livro.css">
-    <link rel="icon" href="../img/favicon.png" type="image/x-icon">
-    <title>Meu Desempenho</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="icon" href="img/favicon.png" type="image/x-icon">
+    <title>Minha Jornada | Sala de Leitura</title>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'leitura-creme': '#FDFCF9',
+                        'leitura-verde': '#638C6D',
+                        'leitura-verde-claro': '#E0E5B6',
+                        'leitura-laranja': '#C84C05',
+                    },
+                    fontFamily: {
+                        'titulo': ['"Special Elite"', 'system-ui'],
+                        'mono': ['"Cutive Mono"', 'monospace'],
+                        'principal': ['"Courier Prime"', 'serif'],
+                        'livro': ['"Tenor Sans"', 'serif'],
+                        'botao': ['"Source Code Pro"', 'monospace'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style type="text/css">
+        @import url('https://fonts.googleapis.com/css2?family=Special+Elite&family=Cutive+Mono&family=Courier+Prime:wght@400;700&family=Tenor+Sans&family=Source+Code+Pro:wght@400;700&display=swap');
+
+        @media (min-width: 1024px) {
+            .sticky-capa {
+                position: sticky;
+                top: 6rem;
+            }
+        }
+    </style>
 </head>
 
-<body>
-<header>
-    <img id="logotipo" src="../img/logotipo.png" alt="logotipo"> 
-    <h2 id="titulo-logo">Sala de Leitura</h2>
+<body class="bg-leitura-creme min-h-screen font-principal text-gray-800">
+
+<header class="bg-white/70 backdrop-blur-md border-b border-gray-200 px-8 py-4 flex items-center justify-between sticky top-0 z-50">
+    <div class="flex items-center gap-3">
+        <img id="logotipo" src="img/logotipo.png" alt="logotipo"
+             class="w-10 h-10 rounded-full object-cover shadow-sm ">
+        <h2 class="font-titulo text-xl text-gray-900">Sala de Leitura</h2>
+    </div>
+    <a id="linkVoltar" href="#" class="group flex items-center gap-2 font-mono text-sm hover:text-leitura-verde transition-colors">
+        <img src="img/arrow_back.png" alt="Voltar" class="w-5 h-5 group-hover:-translate-x-1 transition-transform">
+        Voltar
+    </a>
 </header>
 
-    <a href="../inicio.html" class="botao-voltar">
-        <img src="../img/arrow_back.png" alt="Voltar">
-    </a>
-    <h2 class="titulo__secundario">Minha Jornada de Leitura</h2>
+<main class="max-w-5xl mx-auto px-6 py-12">
 
-<div class="super-bloco">
-    <div class="livro-container">
-        <div class="livro-capa">
-            <img id="capaLivro" src="../img/capa-livro.png" alt="Capa do livro">
+    <div class="flex flex-col lg:flex-row gap-12 items-center lg:items-start">
+
+        <div class="w-full lg:w-1/3 sticky-capa flex flex-col items-center lg:items-start">
+
+            <div class="relative w-full max-w-[200px] group">
+                <div class="absolute -top-2 -right-2 bg-leitura-laranja text-white text-[9px] font-bold px-2 py-1 rounded-full shadow-lg z-10">
+                    LIDO
+                </div>
+
+                <img id="capaLivro" src="img/capa-livro.png" alt="Capa"
+                     class="w-full rounded-2xl shadow-xl border-[3px] border-white object-cover aspect-[2/3] bg-gray-200">
+            </div>
+
+            <div class="mt-6 text-center lg:text-left w-full max-w-[200px]">
+                <h1 id="tituloLivro" class="font-livro text-[25px] text-gray-900 leading-tight"></h1>
+                <p id="autorLivro" class="font-mono  text-gray-900 mt-2 text-[20px] leading-relaxed"></p>
+            </div>
         </div>
 
-        <div class="livro-detalhes">
-            <div class="info-bloco-geral">
+        <div class="flex-1 w-full">
+            <h3 class="font-mono text-[14px] uppercase tracking-[0.2em] text-gray-800 mb-6 text-center lg:text-left font-bold">Resumo da Leitura</h3>
 
-                <div class="info-bloco">
-                    <span class="label">Livro</span>
-                    <img id="tituloLivroImg" src="../img/Book.png" alt="Título do Livro" class="livro-info-img">
-                    <p id="tituloLivro"></p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+
+                <div class="md:col-span-2 bg-leitura-verde text-white p-6 rounded-[1.5rem] flex items-center justify-between overflow-hidden relative group shadow-md border border-leitura-verde">
+                    <div class="relative z-10">
+                        <p class="font-mono text-[12px] uppercase opacity-80 mb-1">Tempo de Jornada</p>
+                        <h4 class="text-2xl font-bold italic">Finalizado em <span id="diasLidos" class="text-leitura-verde-claro">XX</span> dias</h4>
+                    </div>
+                    <img src="img/Book open.png" class="w-16 h-16 opacity-15 absolute -right-2 -bottom-2 group-hover:scale-110 transition-transform duration-500 invert">
                 </div>
 
-                <div class="info-bloco">
-                    <span class="label">Autor</span>
-                    <img id="autorLivroImg" src="../img/person.png" alt="Autor do Livro" class="livro-info-img">
-                    <p id="autorLivro"></p>
+                <div class="bg-white p-6 rounded-[1.5rem] shadow-sm border border-gray-100 flex items-center gap-4">
+                    <div class="bg-leitura-creme p-3 rounded-full">
+                        <img src="img/paginas.png" class="w-6 h-6 opacity-80">
+                    </div>
+                    <div>
+                        <p class="font-mono text-[11px] uppercase font-bold text-gray-800 tracking-wider">Média de Páginas</p>
+                        <p class="text-xl font-bold text-gray-800"><span id="mediaPaginasPorDia">XX</span> <span class="text-xs font-normal text-gray-500">/sessão</span></p>
+                    </div>
                 </div>
 
-                <div class="info-bloco">
-                    <span class="label">Páginas</span>
-                    <img id="paginasLivroImg" src="../img/Pen tool.png" alt="Páginas do Livro" class="livro-info-img">
-                    <p id="paginasLivro"></p>
+                <div class="bg-white p-6 rounded-[1.5rem] shadow-sm border border-gray-100 flex items-center gap-4">
+                    <div class="bg-leitura-creme p-3 rounded-full">
+                        <img src="img/Clock.png" class="w-6 h-6 opacity-80">
+                    </div>
+                    <div>
+                        <p class="font-mono text-[11px] uppercase font-bold text-gray-800 tracking-wider">Velocidade de Leitura</p>
+                        <p class="text-xl font-bold text-gray-800"><span id="mediaTempoSessao">XX</span> <span class="text-xs font-normal text-gray-500">pág/hora</span></p>
+                    </div>
                 </div>
 
-                <div class="info-bloco">
-                    <span class="label">Ano</span>
-                    <img id="anoPublicacaoImg" src="../img/Calendar.png" alt="Ano de Publicação" class="livro-info-img">
-                    <p id="anoPublicacao"></p>
-                </div>
+                <div class="md:col-span-2 grid grid-cols-3 gap-3 bg-white/50 p-2 rounded-2xl border border-gray-100">
 
-                <div class="info-bloco">
-                    <span class="label">País</span>
-                    <img id="paisLivroImg" src="../img/country.png" alt="País do Livro" class="livro-info-img">
-                    <p id="country"></p>
+                    <div class="bg-white p-4 rounded-xl shadow-sm flex flex-col items-center text-center gap-2 border border-gray-50">
+                        <span class="block text-[10px] uppercase font-bold text-gray-500 tracking-wider">País</span>
+                        <img src="img/country.png" class="w-4 h-4 opacity-60"> <div class="leading-tight">
+                        <span id="country" class="font-mono text-[13px] font-bold text-gray-900"></span>
+                    </div>
+                    </div>
+
+                    <div class="bg-white p-4 rounded-xl shadow-sm flex flex-col items-center text-center gap-2 border border-gray-50">
+                        <span class="block text-[10px] uppercase font-bold text-gray-500 tracking-wider">Ano</span>
+                        <img src="img/Calendar.png" class="w-4 h-4 opacity-60">
+                        <div class="leading-tight">
+                            <span id="anoPublicacao" class="font-mono text-[13px] font-bold text-gray-900"></span>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-4 rounded-xl shadow-sm flex flex-col items-center text-center gap-2 border border-gray-50">
+                        <span class="block text-[10px] uppercase font-bold text-gray-500 tracking-wider">Páginas</span>
+                        <img src="img/Pen tool.png" class="w-4 h-4 opacity-60">
+                        <div class="leading-tight">
+                            <span id="paginasLivro" class="font-mono text-[13px] font-bold text-gray-900"></span>
+                        </div>
+                    </div>
+
                 </div>
             </div>
 
-            <div class="info-estatistica">
-
-                <div class="estatisticas-bloco">
-                    <img src="../img/Book open.png" alt="média de tempo para finalizar livro">
-                    <p>Livro finalizado em <strong><span id="diasLidos">XX</span></strong> dias.</p>
-                </div>
-
-                <div class="estatisticas-bloco">
-                    <img src="../img/paginas.png" alt="Páginas lidas por sessão">
-                    <p>Média de páginas por sessão: <strong><span id="mediaPaginasPorDia">XX</span></strong> páginas.</p>
-                </div>
-
-                <div class="estatisticas-bloco">
-                    <img src="../img/Clock.png" alt="média de tempo por sessão">
-                    <p>Média de tempo de sessão: <strong><span id="mediaTempoSessao">XX</span></strong>.</p>
-                </div>
+            <div class="mt-8 flex flex-col sm:flex-row gap-4 items-center justify-between bg-white/40 p-6 rounded-[1.5rem] border border-white border-opacity-60 shadow-inner">
+                <p class="text-[11px] text-gray-400 italic">Relatório gerado pela Sala de Leitura.</p>
+                <button class="bg-leitura-verde text-white font-botao px-6 py-2.5 rounded-xl hover:bg-leitura-laranja transition-all flex items-center gap-2 shadow-lg active:scale-95 text-xs uppercase tracking-widest">
+                    <span>Baixar</span>
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                </button>
             </div>
         </div>
     </div>
-</div>
+</main>
 
-<script src="../js/estatistica-livro.js"></script>
+<script src="js/estatistica.js"></script>
 </body>
 </html>

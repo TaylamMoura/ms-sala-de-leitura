@@ -3,26 +3,150 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../css/styles.css">
-    <link rel="stylesheet" href="../css/fim-sessao.css">
-    <link rel="icon" href="../img/favicon.png" type="image/x-icon">
-    <title>Finalizar Leitura</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="icon" href="img/favicon.png" type="image/x-icon">
+    <title>Resumo | Sala de Leitura</title>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'leitura-creme': '#FDFCF9',
+                        'leitura-verde': '#638C6D',
+                        'leitura-laranja': '#C84C05',
+                        'leitura-verde-claro': '#E0E5B6',
+                    },
+                    fontFamily: {
+                        'titulo': ['"Special Elite"', 'system-ui'],
+                        'mono': ['"Cutive Mono"', 'monospace'],
+                        'principal': ['"Courier Prime"', 'serif'],
+                        'livro': ['"Tenor Sans"', 'serif'],
+                        'botao': ['"Source Code Pro"', 'monospace'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style type="text/css">
+        @import url('https://fonts.googleapis.com/css2?family=Special+Elite&family=Cutive+Mono&family=Courier+Prime:wght@400;700&family=Tenor+Sans&family=Source+Code+Pro:wght@400;700&display=swap');
+
+        .fade-in {
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
 </head>
-<body>
-    <header>
-        <img id="logotipo" src="../img/logotipo.png" alt="logotipo"> 
-    </header>
 
+<body class="bg-leitura-creme min-h-screen font-principal text-gray-800">
 
-    <div class="capa-livro">
-        <!-- exibir a capa do livro atual -->
+<header class="bg-white/70 backdrop-blur-md border-b border-gray-200 px-8 py-4 flex items-center justify-between sticky top-0 z-50">
+    <div class="flex items-center gap-3">
+        <img src="img/logotipo.png" alt="logotipo"
+             class="w-10 h-10 rounded-full object-cover shadow-sm">
+        <h2 class="font-titulo text-xl text-gray-900">Sala de Leitura</h2>
+    </div>
+</header>
+
+<main class="max-w-4xl mx-auto px-6 py-12 flex flex-col items-center">
+
+    <div class="text-center mb-10 fade-in">
+        <h1 class="font-titulo text-3xl text-gray-900 pb-2">Sessão Encerrada</h1>
+        <p class="font-mono text-[11px] uppercase tracking-[0.2em] text-leitura-verde font-bold">Resumo do seu progresso</p>
     </div>
 
-    <div class="informacao-livro">
-        <h6>Tempo:</h6>
-        <h6>Páginas lidas: </h6>
+    <div class="flex flex-col md:flex-row gap-12 items-center justify-center w-full fade-in" style="animation-delay: 0.2s;">
 
+        <div class="w-full max-w-[240px]">
+            <div class="relative group">
+                <div class="absolute -inset-3 bg-leitura-verde/10 rounded-[2rem] blur-2xl opacity-60"></div>
+                <img id="capaLivroAtual" src="img/capa-livro.png" alt="Capa"
+                     class="relative w-full rounded-2xl shadow-2xl border-4 border-white object-cover aspect-[2/3]">
+            </div>
+        </div>
+
+        <div class="flex-1 w-full max-w-sm space-y-5">
+
+            <div class="bg-leitura-verde text-white p-6 rounded-[1.5rem] shadow-md border border-leitura-verde relative overflow-hidden group">
+                <div class="relative z-10">
+                    <p class="font-mono text-[10px] uppercase opacity-80 mb-1">Tempo de Leitura</p>
+                    <h4 id="tempoSessao" class="text-2xl font-bold italic text-leitura-verde-claro">00:00:00</h4>
+                </div>
+                <img src="img/Clock.png" class="w-16 h-16 opacity-15 absolute -right-2 -bottom-2 group-hover:scale-110 transition-transform invert">
+            </div>
+
+            <div class="bg-white p-6 rounded-[1.5rem] shadow-sm border border-gray-100 flex items-center gap-4">
+                <div class="bg-leitura-creme p-3 rounded-full">
+                    <img src="img/paginas-2.png" class="w-6 h-6 opacity-80">
+                </div>
+                <div>
+                    <p class="font-mono text-[11px] uppercase font-bold text-gray-800 tracking-wider">Páginas Lidas até agora</p>
+                    <p class="text-xl font-bold text-gray-800"><span id="paginasLidas">0</span> <span class="text-xs font-normal text-gray-500 uppercase">páginas</span></p>
+                </div>
+            </div>
+
+            <div class="pt-4">
+                <a id="btnContinuar" href="#" class="block w-full bg-leitura-verde text-white text-center font-botao px-6 py-3.5 rounded-xl hover:bg-leitura-laranja transition-all shadow-lg active:scale-95 text-xs uppercase tracking-widest">
+                    Voltar
+                </a>
+            </div>
+
+        </div>
     </div>
+</main>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        // 1. Pega os parâmetros da URL (enviados pela página anterior)
+        const params = new URLSearchParams(window.location.search);
+
+        const bookId = params.get('bookId');
+        const tempo = params.get('tempo') || "00:00";
+        const paginaFinal = params.get('pagina') || "0";
+
+        // 2. Preenche os dados na tela
+        document.getElementById('tempoSessao').textContent = tempo;
+        document.getElementById('paginasLidas').textContent = paginaFinal;
+
+        // 3. Configura o botão de voltar com o bookId correto
+        const btnContinuar = document.getElementById('btnContinuar');
+        if (bookId) {
+            // Ajuste aqui para o nome exato da sua página de detalhes (livro-detalhes.html ou meu-detalhes.html)
+            btnContinuar.href = `livro-detalhes.html?bookId=${bookId}`;
+        } else {
+            btnContinuar.href = 'home.html';
+        }
+
+        // 4. Busca a capa do livro (opcional, mas deixa lindo)
+        // Se você quiser que a capa apareça, podemos usar o bookId para buscar no catalog
+        // Ou, se preferir não fazer outra requisição, podemos passar a URL da capa na URL também!
+        if (bookId) {
+            buscarCapaResumo(bookId);
+        }
+    });
+
+    async function buscarCapaResumo(id) {
+        const GATEWAY_URL = 'http://localhost:8080';
+        const userId = localStorage.getItem('userId');
+        const token = localStorage.getItem('token');
+
+        try {
+            const response = await fetch(`${GATEWAY_URL}/livros/exibirDados/${id}/${userId}`, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            if (response.ok) {
+                const livro = await response.json();
+                document.getElementById('capaLivroAtual').src = livro.coverUrl || livro.urlCapa;
+            }
+        } catch (e) {
+            console.error("Erro ao carregar capa no resumo", e);
+        }
+    }
+</script>
 
 </body>
 </html>

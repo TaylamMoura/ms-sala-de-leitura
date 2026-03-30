@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="icon" href="img/favicon.png" type="image/x-icon">
+    <title>Minha Estante | Sala de Leitura</title>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'leitura-creme': '#FDFCF9', // Fundo clarinho (tom de papel)
+                        'leitura-verde': '#638C6D', // Seu verde clássico
+                        'leitura-verde-claro': '#E0E5B6', // O verde de destaque
+                        'leitura-laranja': '#C84C05',
+                        'leitura-pesquisa': '#FAEED1',
+                    },
+                    fontFamily: {
+                        'titulo': ['"Special Elite"', 'system-ui'],
+                        'mono': ['"Cutive Mono"', 'monospace'],
+                        'principal': ['"Courier Prime"', 'serif'],
+                        'livro': ['"Tenor Sans"', 'serif'],
+                        'botao': ['"Source Code Pro"', 'monospace'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style type="text/css">
+        @import url('https://fonts.googleapis.com/css2?family=Special+Elite&family=Cutive+Mono&family=Courier+Prime:wght@400;700&family=Tenor+Sans&family=Source+Code+Pro:wght@400;700&display=swap');
+
+        /* Ajuste fino para a barra de rolagem personalizada */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #FDFCF9; }
+        ::-webkit-scrollbar-thumb { background: #638C6D; border-radius: 10px; }
+    </style>
+</head>
+
+<body class="bg-leitura-creme min-h-screen font-principal text-gray-800">
+
+<header class="bg-white/70 backdrop-blur-md border-b border-gray-200 px-6 py-4 flex flex-col md:flex-row items-center justify-between gap-4 sticky top-0 z-50">
+
+    <div class="flex items-center gap-3">
+        <img id="logotipo" src="img/logotipo.png" alt="logotipo" class="w-12 h-12 rounded-full border border-gray-100 shadow-sm">
+        <h2 class="font-titulo text-2xl text-gray-900">Sala de Leitura</h2>
+    </div>
+
+    <form id="buscarLivroForm" onsubmit="return false;" class="w-full max-w-md flex items-center bg-leitura-pesquisa rounded-full px-5 py-2 shadow-inner focus-within:ring-2 focus-within:ring-leitura-verde/50 transition-all">
+        <input type="text" id="tituloLivro" placeholder="Digite o título do livro"
+               class="bg-transparent w-full outline-none text-lg font-mono placeholder-gray-500">
+        <button id="botao-buscar" type="submit" class="p-1 hover:scale-110 transition-transform">
+            <img src="img/Search.png" alt="Buscar" class="w-5 h-5 opacity-70">
+        </button>
+    </form>
+
+    <div class="flex items-center gap-4">
+        <button onclick="mostrarEstatisticaGeral()"
+                class="bg-leitura-verde-claro border-2 border-leitura-verde p-2 rounded-full
+                   hover:bg-leitura-laranja hover:border-leitura-laranja transition-all duration-300 shadow-sm group">
+            <img src="img/barras-estatisticas.png" alt="Estatisticas"
+                 class="w-6 h-6 group-hover:invert group-hover:brightness-200 transition-all">
+        </button>
+
+        <button id="logout" onclick="fazerLogout()"
+                class="bg-leitura-verde text-white font-botao px-6 py-2 rounded-xl hover:bg-leitura-laranja transition-all shadow-md active:scale-95">
+            Sair
+        </button>
+    </div>
+</header>
+
+<main class="max-w-7xl mx-auto px-6 py-10">
+
+    <div class="mb-10 flex items-center gap-4">
+        <h2 class="font-mono text-3xl font-light text-gray-700">Minhas Leituras</h2>
+        <div class="h-[2px] flex-1 bg-gradient-to-r from-leitura-verde/30 to-transparent"></div>
+    </div>
+
+    <div id="minhasLeituras" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-x-8 gap-y-12 justify-items-center overflow-visible">
+    </div>
+</main>
+
+<div id="resultadoModal" class="modal hidden fixed inset-0 z-[100] bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-leitura-verde-claro w-full max-w-2xl rounded-3xl p-8 relative shadow-2xl animate-in fade-in zoom-in duration-300">
+        <span class="close absolute top-4 right-6 text-3xl font-bold cursor-pointer text-leitura-verde hover:text-leitura-laranja transition-colors">&times;</span>
+        <div id="resultadoBusca" class="max-h-[70vh] overflow-y-auto pr-4 grid grid-cols-1 gap-4">
+        </div>
+    </div>
+</div>
+
+<script src="js/app.js"></script>
+</body>
+</html>

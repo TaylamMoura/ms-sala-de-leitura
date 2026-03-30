@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="icon" href="img/favicon.png" type="image/x-icon">
+    <title>Minha Leitura | Sala de Leitura</title>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'leitura-creme': '#FDFCF9',
+                        'leitura-verde': '#638C6D',
+                        'leitura-verde-claro': '#E0E5B6',
+                        'leitura-laranja': '#C84C05',
+                        'leitura-pesquisa': '#FAEED1',
+                    },
+                    fontFamily: {
+                        'titulo': ['"Special Elite"', 'system-ui'],
+                        'mono': ['"Cutive Mono"', 'monospace'],
+                        'principal': ['"Courier Prime"', 'serif'],
+                        'livro': ['"Tenor Sans"', 'serif'],
+                        'botao': ['"Source Code Pro"', 'monospace'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style type="text/css">
+        @import url('https://fonts.googleapis.com/css2?family=Special+Elite&family=Cutive+Mono&family=Courier+Prime:wght@400;700&family=Tenor+Sans&family=Source+Code+Pro:wght@400;700&display=swap');
+
+        .modal-centralizada {
+            display: none;
+        }
+
+        .modal-centralizada.flex {
+            display: flex;
+        }
+
+        @keyframes shimmer {
+            100% {
+                transform: translateX(100%);
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-leitura-creme min-h-screen font-principal text-gray-800">
+
+<header class="bg-white/70 backdrop-blur-md border-b border-gray-200 px-8 py-4 flex items-center justify-between sticky top-0 z-50">
+    <div class="flex items-center gap-3">
+        <img id="logotipo" src="img/logotipo.png" alt="logotipo" class="w-10 h-10 rounded-full">
+        <h2 class="font-titulo text-xl text-gray-900">Sala de Leitura</h2>
+    </div>
+    <a href="home.html" class="group flex items-center gap-2 font-mono text-sm hover:text-leitura-verde transition-colors">
+        <img src="img/arrow_back.png" alt="Voltar" class="w-5 h-5 group-hover:-translate-x-1 transition-transform">
+        Voltar para estante
+    </a>
+</header>
+
+<main class="max-w-6xl mx-auto px-6 py-12">
+    <div class="grid grid-cols-1 md:grid-cols-[250px_1fr] gap-12 items-start">
+
+        <div class="flex flex-col items-center">
+            <div class="relative group">
+                <div class="absolute -inset-1 bg-leitura-verde/10 rounded-2xl blur opacity-30"></div>
+                <img id="capaLivro" src="img/capa-livro.png" alt="Capa" class="relative w-56 rounded-xl shadow-2xl border-4 border-white object-cover aspect-[2/3]">
+            </div>
+            <h2 class="font-mono text-xl text-center border-b-2 border-leitura-verde-claro mt-6 pb-2 w-full italic text-gray-600">Minha Leitura</h2>
+        </div>
+
+        <div class="flex flex-col gap-6">
+
+            <div class="flex flex-wrap md:flex-nowrap items-center justify-between gap-2 bg-white p-5 rounded-2xl border border-gray-100 shadow-sm">
+                <div class="flex flex-col items-center flex-1">
+                    <span class="text-xs uppercase font-bold text-gray-400 mb-1">Livro</span>
+                    <img src="img/Book.png" class="w-5 h-5 mb-1 opacity-60">
+                    <p id="tituloLivro" class="font-livro text-[14px] text-black text-center"></p>
+                </div>
+                <div class="flex flex-col items-center flex-1">
+                    <span class="text-xs uppercase font-bold text-gray-400 mb-1">Autor</span>
+                    <img src="img/person.png" class="w-5 h-5 mb-1 opacity-60">
+                    <p id="autorLivro" class="font-mono text-[14px] text-black text-center"></p>
+                </div>
+                <div class="flex flex-col items-center flex-1">
+                    <span class="text-xs uppercase font-bold text-gray-400 mb-1">Páginas</span>
+                    <img src="img/Pen tool.png" class="w-5 h-5 mb-1 opacity-60">
+                    <p id="paginasLivro" class="font-mono text-[14px] text-black"></p>
+                </div>
+                <div class="flex flex-col items-center flex-1">
+                    <span class="text-xs uppercase font-bold text-gray-400 mb-1">Ano</span>
+                    <img src="img/Calendar.png" class="w-5 h-5 mb-1 opacity-60">
+                    <p id="anoPublicacao" class="font-mono text-[14px] text-black"></p>
+                </div>
+                <div class="flex flex-col items-center flex-1">
+                    <span class="text-xs uppercase font-bold text-gray-400 mb-1">País</span>
+                    <img src="img/country.png" class="w-5 h-5 mb-1 opacity-60">
+                    <p id="paisOrigem" class="font-mono text-[14px] text-black"></p>
+                </div>
+            </div>
+
+            <div class="flex flex-col md:flex-row gap-8 items-start mt-10">
+
+                <div class="flex-1 bg-white p-8 rounded-[2rem] shadow-md border border-gray-100 w-full">
+                    <div class="flex items-center justify-between mb-4">
+                        <span class="text-sm uppercase font-bold text-gray-400">Progresso de Leitura</span>
+                        <div class="font-mono">
+                            <span id="paginaAtual" class="text-xl font-bold text-leitura-laranja">0</span>
+                            <span class="text-gray-300">/</span>
+                            <span id="totalPaginas" class="text-xl font-bold text-gray-800">0</span>
+                        </div>
+                    </div>
+
+                    <div class="w-full h-3 bg-leitura-pesquisa rounded-full overflow-hidden border border-gray-50 shadow-inner">
+                        <div id="progresso" class="h-full bg-leitura-laranja transition-all duration-1000" style="width: 0%;"></div>
+                    </div>
+
+                    <div class="mt-12 flex justify-center">
+                        <button onclick="iniciarSessao()" class="group relative bg-leitura-verde-claro text-leitura-verde font-botao px-16 py-4 rounded-2xl hover:bg-leitura-verde hover:text-white transition-all duration-300 shadow-md hover:shadow-leitura-verde/30 active:scale-95 text-sm font-bold uppercase tracking-widest overflow-hidden">
+                            <span class="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full group-hover:animate-[shimmer_1.5s_infinite] transition-transform"></span>
+                            <span class="relative flex items-center gap-2">
+                                    Iniciar Sessão
+                                    <span class="inline-block transform translate-x-[-10px] opacity-0 group-hover:translate-x-0 group-hover:opacity-100 transition-all duration-300"></span>
+                                </span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="flex flex-row md:flex-col gap-4">
+                    <button onclick="favoritos()" class="bg-white p-3.5 rounded-full hover:bg-leitura-laranja group transition-all shadow-md">
+                        <img src="img/Heart.png" alt="Favoritar" class="w-5 h-5 group-hover:invert">
+                    </button>
+                    <button onclick="mostrarFormularioEdicao()" class="bg-white p-3.5 rounded-full hover:bg-leitura-verde group transition-all shadow-md">
+                        <img src="img/Edit 3.png" alt="Editar" class="w-5 h-5 group-hover:invert">
+                    </button>
+                    <button onclick="redirecionarEstatisticasLivro()" class="bg-white p-3.5 rounded-full hover:bg-leitura-verde group transition-all shadow-md">
+                        <img src="img/barras-estatisticas.png" alt="Estatísticas" class="w-5 h-5 group-hover:invert">
+                    </button>
+                    <button onclick="mostrarConfirmacaoExclusao()" class="bg-white p-3.5 rounded-full hover:bg-red-500 group transition-all shadow-md">
+                        <img src="img/delete.png" alt="Excluir" class="w-5 h-5 group-hover:invert">
+                    </button>
+                </div>
+
+            </div> </div> </div> </main>
+
+<div id="formulario-edicao" class="hidden fixed inset-0 z-[100] bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-leitura-verde-claro w-full max-w-md rounded-[2.5rem] p-10 relative shadow-2xl border border-leitura-verde/20">
+        <h3 class="font-mono text-xl mb-6 text-leitura-verde font-bold">Editar Informações</h3>
+        <form id="formEdicaoLivro" class="space-y-5">
+            <div class="flex flex-col gap-1">
+                <label class="text-sm uppercase font-bold text-leitura-verde/70 ml-1">Páginas</label>
+                <input type="number" id="inputPaginas" class="bg-white/80 border-none rounded-xl p-3 outline-none focus:ring-2 focus:ring-leitura-verde/50 font-mono">
+            </div>
+            <div class="flex flex-col gap-1">
+                <label class="text-sm uppercase font-bold text-leitura-verde/70 ml-1">Ano</label>
+                <input type="number" id="inputAnoPublicacao" class="bg-white/80 border-none rounded-xl p-3 outline-none focus:ring-2 focus:ring-leitura-verde/50 font-mono">
+            </div>
+            <div class="flex flex-col gap-1">
+                <label class="text-sm uppercase font-bold text-leitura-verde/70 ml-1">País</label>
+                <input type="text" id="inputPaisOrigem" class="bg-white/80 border-none rounded-xl p-3 outline-none focus:ring-2 focus:ring-leitura-verde/50 font-mono">
+            </div>
+            <div class="flex gap-3 pt-4">
+                <button type="button" onclick="enviarEdicaoLivro()" class="flex-1 bg-leitura-verde text-white py-3 rounded-xl font-bold hover:bg-leitura-laranja transition-all shadow-sm">Salvar</button>
+                <button type="button" onclick="fecharFormularioEdicao()" class="flex-1 bg-white text-leitura-verde py-3 rounded-xl font-bold hover:bg-gray-100 transition-all">Cancelar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div id="confirmacaoExclusaoModal" class="hidden fixed inset-0 z-[100] bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-leitura-verde-claro w-full max-w-xs rounded-3xl p-8 text-center shadow-2xl border border-leitura-verde/20">
+        <p class="text-leitura-verde font-bold mb-6">Deseja mesmo excluir este livro?</p>
+        <div class="flex gap-3">
+            <button onclick="excluirLivroConfirmado()" class="flex-1 bg-red-500 text-white py-2.5 rounded-xl font-bold hover:bg-red-600 transition-all">Sim</button>
+            <button onclick="fecharConfirmacaoExclusao()" class="flex-1 bg-white text-gray-500 py-2.5 rounded-xl font-bold hover:bg-gray-100 transition-all">Não</button>
+        </div>
+    </div>
+</div>
+
+<script src="js/livro-info.js"></script>
+<script>
+    function mostrarFormularioEdicao() {
+        const modal = document.getElementById('formulario-edicao');
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+    }
+
+    function fecharFormularioEdicao() {
+        const modal = document.getElementById('formulario-edicao');
+        modal.classList.remove('flex');
+        modal.classList.add('hidden');
+    }
+
+    function mostrarConfirmacaoExclusao() {
+        const modal = document.getElementById('confirmacaoExclusaoModal');
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+    }
+
+    function fecharConfirmacaoExclusao() {
+        const modal = document.getElementById('confirmacaoExclusaoModal');
+        modal.classList.remove('flex');
+        modal.classList.add('hidden');
+    }
+
+    window.onclick = function(event) {
+        const modalEdicao = document.getElementById('formulario-edicao');
+        const modalExclusao = document.getElementById('confirmacaoExclusaoModal');
+        if (event.target == modalEdicao) fecharFormularioEdicao();
+        if (event.target == modalExclusao) fecharConfirmacaoExclusao();
+    }
+</script>
+</body>
+
+</html>
