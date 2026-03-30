@@ -23,6 +23,11 @@ public class JwtService {
     }
 
     public Claims validateToken(String token) {
+        // LIMPEZA DO TOKEN: Se vier com "Bearer ", removemos para validar apenas a hash
+        if (token != null && token.startsWith("Bearer ")) {
+            token = token.substring(7);
+        }
+
         return Jwts.parserBuilder()
                 .setSigningKey(getSigningKey())
                 .build()
