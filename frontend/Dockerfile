@@ -7,9 +7,9 @@ RUN rm -rf /usr/share/nginx/html/*
 # Copia os arquivos do frontend para a pasta servida pelo Nginx
 COPY ./http/ /usr/share/nginx/html/
 
-COPY ./css/ /usr/share/nginx/html/css/
-COPY ./js/ /usr/share/nginx/html/js/
-COPY ./img/ /usr/share/nginx/html/img/
+COPY http/css/ /usr/share/nginx/html/css/
+COPY http/js/ /usr/share/nginx/html/js/
+COPY http/img/ /usr/share/nginx/html/img/
 
 # Expõe a porta 80
 EXPOSE 80
