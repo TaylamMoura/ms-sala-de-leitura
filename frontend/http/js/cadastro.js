@@ -76,7 +76,7 @@ formCadastro.addEventListener("submit", async (e) => {
 
         if (response.status === 201) {
             alert("Cadastro realizado com sucesso!");
-            window.location.href = "inicio.html";
+            window.location.href = "index.html";
         } else {
             // Primeiro verificamos se a resposta é realmente um JSON
             const contentType = response.headers.get("content-type");

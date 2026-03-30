@@ -47,7 +47,7 @@ async function fazerLogin(e){
               const dados = await response.json();
               localStorage.setItem('token', dados.token);
               localStorage.setItem('userId', dados.userId);
-              window.location.href = 'index.html';
+              window.location.href = 'home.html';
 
             } else {
                const contentType = response.headers.get("content-type");

@@ -1,6 +1,7 @@
 const GATEWAY_URL = 'http://localhost:8080'; 
 
-const bookId = new URLSearchParams(window.location.search).get('bookId');
+const urlParams = new URLSearchParams(window.location.search);
+const bookId = urlParams.get('bookId');
 const userId = localStorage.getItem('userId');
 
 function getAuthHeader(){
@@ -13,13 +14,12 @@ function getAuthHeader(){
 
 //FUNÇÃO PARA ATUALIZAR A BARRA DE PROGRESSO
 
-//INFO DEVE VIM DE SESSION ---> VOLTAR AQUI
 async function atualizarBarraProgresso() {
     if (!bookId) return;
 
     try {
         // 1. Busca a última página lida no ms-sessions via Gateway
-        const responseSession = await fetch(`${GATEWAY_URL}/sessao-leitura/ultima-pagina/${bookId}`, {
+        const responseSession = await fetch(`${GATEWAY_URL}/sessao-leitura/ultima-pagina/${userId}/${bookId}`, {
             headers: getAuthHeader()
         });
 
@@ -149,7 +149,7 @@ async function excluirLivroConfirmado() {
     }
 
     alert('Livro excluído com sucesso!');
-    window.location.href = 'index.html';
+    window.location.href = 'home.html';
 
   } catch (error) {
     console.error('Erro ao excluir o livro:', error);
@@ -163,7 +163,7 @@ async function excluirLivroConfirmado() {
 
 function iniciarSessao() {
   if(bookId){
-    window.location.href = `sessaoLeitura.html?bookId=${bookId}`;
+    window.location.href = `sessao-leitura.html?bookId=${bookId}`;
   } else{
     alert('Erro: livro nao encontrado.');
   }
@@ -180,8 +180,6 @@ function redirecionarEstatisticasLivro() {
   }
 
 }
-
-
 
 
 // Inicia a atualização automática a cada 30 segundos
