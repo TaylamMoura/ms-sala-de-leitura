@@ -2,7 +2,7 @@ package com.reading.ms_sessions.dto;
 
 
 public record BookDTO(
-        Long id,
+        Long bookId,
         String title,
         String author,
         int pages,
