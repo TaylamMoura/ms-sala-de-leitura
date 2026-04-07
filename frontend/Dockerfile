@@ -5,9 +5,7 @@ FROM nginx:alpine
 RUN rm -rf /usr/share/nginx/html/*
 
 # Copia os arquivos do frontend para a pasta servida pelo Nginx
-COPY ./http/ /usr/share/nginx/html/
-
-COPY http/css/ /usr/share/nginx/html/css/
+COPY ./http/ /usr/share/nginx/html
 COPY http/js/ /usr/share/nginx/html/js/
 COPY http/img/ /usr/share/nginx/html/img/
 
