@@ -96,6 +96,8 @@ function fecharFormularioEdicao() {
 //FUNÇÃO PARA ENVIAR A EDIÇÃO DO LIVRO AO SERVIDOR
 async function enviarEdicaoLivro() {
   const dadosAtualizados = {
+        title: document.getElementById('inputTitulo').value,
+        author: document.getElementById('inputAutor').value,
         pages: parseInt(document.getElementById('inputPaginas').value),
         publicationYear: parseInt(document.getElementById('inputAnoPublicacao').value),
         country: document.getElementById('inputPaisOrigem').value
