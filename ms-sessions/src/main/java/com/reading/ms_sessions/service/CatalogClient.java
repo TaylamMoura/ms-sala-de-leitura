@@ -2,9 +2,7 @@ package com.reading.ms_sessions.service;
 
 import com.reading.ms_sessions.dto.BookDTO;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -23,4 +21,8 @@ public interface CatalogClient {
     // Contar quantos livros finalizados o usuário tem
     @GetMapping("/livros/count-finished/{userId}")
     int countFinishedBooks(@PathVariable("userId") Long userId);
+
+    //Marcar livro como finalizado
+    @PutMapping("/livros/{bookId}/finalizar/{userId}")
+    void markAsFinished(@PathVariable("bookId") Long bookId, @PathVariable("userId") Long userId);
 }
