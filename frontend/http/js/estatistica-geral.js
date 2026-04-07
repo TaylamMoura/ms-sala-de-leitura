@@ -1,13 +1,12 @@
-const GATEWAY_URL = "http://localhost:8080"; 
+const GATEWAY_URL = "http://localhost:8080";
 
-function getAuthHeader(){
+function getAuthHeader() {
     const token = localStorage.getItem('token');
     return {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`
     };
 }
-
 
 function formatarHorasMinutos(segundos) {
     let horas = Math.floor(segundos / 3600);
@@ -17,24 +16,24 @@ function formatarHorasMinutos(segundos) {
 
 // Função para carregar estatísticas GERAIS
 async function mostrarEstatisticaGeral() {
-    try{
+    try {
         const response = await fetch(`${GATEWAY_URL}/estatisticas/geral`, {
             method: 'GET',
             headers: getAuthHeader(),
-    });
+        });
 
-    if(!response.ok){
-        if(response.status === 401) window.location.href = 'index.html';
-        throw new Error("Erro ao carregar estatísticas gerais: " + response.status);
-    }
+        if (!response.ok) {
+            if (response.status === 401) window.location.href = 'index.html';
+            throw new Error("Erro ao carregar estatísticas gerais: " + response.status);
+        }
 
-    const data = await response.json();
+        const data = await response.json();
 
-    document.getElementById("totalHorasLidas").textContent = formatarHorasMinutos(data.totalSecondsRead);
-    document.getElementById("totalPaginasLidas").textContent = data.totalPagesRead || 0;
-    document.getElementById("totalLivrosLidos").textContent = data.totalBooksRead || 0;
+        document.getElementById("totalHorasLidas").textContent = formatarHorasMinutos(data.totalSecondsRead);
+        document.getElementById("totalPaginasLidas").textContent = data.totalPagesRead || 0;
+        document.getElementById("totalLivrosLidos").textContent = data.totalBooksRead || 0;
 
-    const campoTotalPaises = document.getElementById("totalPaisesLidos");
+        const campoTotalPaises = document.getElementById("totalPaisesLidos");
         if (campoTotalPaises) campoTotalPaises.textContent = data.totalCountriesRead || 0;
 
         // 2. Ranking de Livros (Destaque e Secundários)
@@ -56,19 +55,18 @@ async function mostrarEstatisticaGeral() {
 }
 
 function renderizarLivrosSecundarios(lista) {
-    const container = document.getElementById("livros-secundarios"); // Mudado de querySelector para getElementById
+    const container = document.getElementById("livros-secundarios");
     if (!container) return;
 
     container.innerHTML = "";
     lista.forEach(livro => {
         const div = document.createElement("div");
-        // Classes do Tailwind para manter o estilo que você criou
         div.className = "flex items-center gap-4 p-3 bg-white/40 rounded-2xl border border-white hover:bg-white/60 transition-all group";
         div.innerHTML = `
             <img src="${livro.coverUrl || 'img/capa-livro.png'}" class="w-14 h-20 rounded-md shadow-md object-cover">
             <div class="flex flex-col">
-                <span class="font-principal text-sm font-bold text-gray-800 leading-snug">${livro.title}</span>
-                <span class="font-mono text-[11px] text-gray-500 italic">${livro.author}</span>
+                <span class="font-principal text-[16px] font-bold text-gray-800 leading-snug">${livro.title}</span>
+                <span class="font-mono text-[14px] text-gray-500 italic">${livro.author}</span>
             </div>
         `;
         container.appendChild(div);
@@ -86,15 +84,39 @@ function renderizarRankingPaises(paises) {
     }
 
     paises.forEach((item, index) => {
+        let bgColor, badgeColor, textColor, countColor;
+
+        // Lógica de Cores por Posição
+        if (index === 0) { // 1º Lugar
+            bgColor = 'bg-leitura-laranja/5 border border-leitura-laranja/10';
+            badgeColor = 'bg-leitura-laranja text-white';
+            textColor = 'font-bold text-gray-800';
+            countColor = 'text-leitura-laranja';
+        } else if (index === 1) { // 2º Lugar
+            bgColor = 'bg-leitura-verde/10';
+            badgeColor = 'bg-leitura-verde/30 text-leitura-verde-escuro';
+            textColor = 'text-gray-700';
+            countColor = 'text-leitura-verde-escuro/70';
+        } else { // 3º Lugar em diante
+            bgColor = 'bg-leitura-laranja/5';
+            badgeColor = 'bg-leitura-laranja/20 text-leitura-laranja';
+            textColor = 'text-gray-700';
+            countColor = 'text-leitura-laranja/50';
+        }
+
         const div = document.createElement("div");
-        div.className = "flex justify-between items-center text-sm";
-        // Ajustado para os nomes do DTO: country e count
+        div.className = `flex justify-between items-center text-sm p-2 rounded-xl ${bgColor}`;
+
         div.innerHTML = `
             <span class="flex items-center gap-3">
-                <span class="w-5 h-5 flex items-center justify-center ${index === 0 ? 'bg-leitura-laranja' : 'bg-gray-200'} text-white text-[9px] font-bold rounded-full">${index + 1}º</span>
-                <span class="font-principal">${item.country}</span>
+                <span class="w-7 h-7 flex items-center justify-center ${badgeColor} text-[12px] font-bold rounded-full shadow-sm">
+                    ${index + 1}º
+                </span>
+                <span class="${textColor}">${item.country}</span>
             </span>
-            <span class="font-mono text-xs text-leitura-verde font-bold">${item.count} livros</span>
+            <span class="font-mono text-xs ${countColor} font-bold">
+                ${item.count} ${item.count > 1 ? 'livros' : 'livro'}
+            </span>
         `;
         container.appendChild(div);
     });
