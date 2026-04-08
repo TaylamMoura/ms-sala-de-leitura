@@ -32,9 +32,9 @@ public class JwtReactiveAuthenticationManager implements ReactiveAuthenticationM
 
                     if (jwtService.isTokenValid(token)) {
                         Claims claims = jwtService.getClaims(token);
-                        String email = claims.get("email", String.class);
+                        String userId = claims.getSubject();
                         UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
-                                email, null, List.of(new SimpleGrantedAuthority("ROLE_USER"))
+                                userId, null, List.of(new SimpleGrantedAuthority("ROLE_USER"))
                         );
 
                         return Mono.just(auth);

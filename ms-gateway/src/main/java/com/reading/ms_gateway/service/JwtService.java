@@ -41,4 +41,8 @@ public class JwtService {
                 .parseClaimsJws(token)
                 .getBody();
     }
+
+    public String getUserId(String token){
+        return  getClaims(token).getSubject();
+    }
 }
