@@ -24,22 +24,25 @@ public class SessionController {
     }
 
     @PostMapping("/iniciar")
-    public ResponseEntity<SessionDTO> startSession(@Valid @RequestBody StartSessionDTO dto) {
+    public ResponseEntity<SessionDTO> startSession(@Valid @RequestBody StartSessionDTO dto,
+                                                   @RequestHeader("X-User-Id") Long userId) {
 
-        ReadingSession readingSession = sessionService.startSession(dto);
+        ReadingSession readingSession = sessionService.startSession(dto, userId);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(new SessionDTO(readingSession));
     }
 
     @PostMapping("/finalizar")
-    public ResponseEntity<SessionDTO> finishedSession(@Valid @RequestBody EndSessionDTO dto) {
-        ReadingSession readingSession = sessionService.endSession(dto);
+    public ResponseEntity<SessionDTO> finishedSession(@Valid @RequestBody EndSessionDTO dto,
+                                                      @RequestHeader("X-User-Id") Long userId) {
+        ReadingSession readingSession = sessionService.endSession(dto, userId);
 
         return ResponseEntity.status(HttpStatus.OK).body(new SessionDTO(readingSession));
     }
 
-    @GetMapping("/ultima-pagina/{userId}/{bookId}")
-    public ResponseEntity<Integer> getLastPage(@PathVariable Long userId, @PathVariable Long bookId){
+    @GetMapping("/ultima-pagina/{bookId}")
+    public ResponseEntity<Integer> getLastPage(@RequestHeader("X-User-Id") Long userId,
+                                               @PathVariable Long bookId){
         int lastPage = sessionsRepository.findTopByUserIdAndBookIdOrderByEndTimeDesc(userId, bookId)
                 .map(ReadingSession::getEndPage)
                 .orElse(0);

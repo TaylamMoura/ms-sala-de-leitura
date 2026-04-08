@@ -17,6 +17,63 @@ public class SessionService {
     private final SessionsRepository sessionsRepository;
     private final CatalogClient catalogClient;
 
+    public SessionService(SessionsRepository sessionsRepository, CatalogClient catalogClient) {
+        this.sessionsRepository = sessionsRepository;
+        this.catalogClient = catalogClient;
+    }
+
+    public ReadingSession startSession(StartSessionDTO dto, Long userId) {
+        ReadingSession session = new ReadingSession();
+        session.setUserId(userId); // Usa o ID do Header
+        session.setBookId(dto.bookId());
+
+        // Busca a última página baseada no usuário logado
+        int lastPage = sessionsRepository.findTopByUserIdAndBookIdOrderByEndTimeDesc(userId, dto.bookId())
+                .map(ReadingSession::getEndPage)
+                .orElse(0);
+
+        session.setStartPage(lastPage);
+        session.setStartTime(LocalDateTime.now());
+
+        return sessionsRepository.save(session);
+    }
+
+    @Transactional
+    public ReadingSession endSession(EndSessionDTO dto, Long userId) {
+        // Busca a sessão ativa/anterior deste usuário
+        int startPage = sessionsRepository.findTopByUserIdAndBookIdOrderByEndTimeDesc(userId, dto.bookId())
+                .map(ReadingSession::getEndPage)
+                .orElse(0);
+
+        // Busca Total de páginas no ms-catalog
+        BookDTO book = catalogClient.getBookDetails(dto.bookId());
+
+        if (dto.lastPage() >= book.pages()) {
+            catalogClient.markAsFinished(dto.bookId(), userId);
+        }
+
+        ReadingSession session = new ReadingSession();
+        session.setUserId(userId);
+        session.setBookId(dto.bookId());
+        session.setStartPage(startPage);
+        session.setEndPage(dto.lastPage());
+        session.setReadingTime(dto.readingTime());
+
+        LocalDateTime timeNow = LocalDateTime.now();
+        session.setEndTime(timeNow);
+        session.setStartTime(timeNow.minusSeconds(dto.readingTime()));
+
+        return sessionsRepository.save(session);
+    }
+}
+
+/*
+@Service
+public class SessionService {
+
+    private final SessionsRepository sessionsRepository;
+    private final CatalogClient catalogClient;
+
     @Autowired
     public SessionService(SessionsRepository sessionsRepository, CatalogClient catalogClient) {
         this.sessionsRepository = sessionsRepository;
@@ -24,9 +81,9 @@ public class SessionService {
     }
 
     // Iniciar Sessão
-    public ReadingSession startSession(StartSessionDTO dto) {
+    public ReadingSession startSession(StartSessionDTO dto, Long userId) {
         ReadingSession session = new ReadingSession();
-        session.setUserId(dto.userId());
+        session.setUserId(userId);
         session.setBookId(dto.bookId());
         session.setStartPage(getLastReadPage(dto.bookId()));
         session.setStartTime(LocalDateTime.now());
@@ -69,3 +126,4 @@ public class SessionService {
                 .orElse(0);
     }
 }
+*/

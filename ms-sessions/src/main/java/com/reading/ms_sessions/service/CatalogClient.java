@@ -10,13 +10,12 @@ import java.util.List;
 public interface CatalogClient {
 
     // Buscar detalhes de um livro específico para um usuário
-    @GetMapping("/livros/exibirDados/{bookId}/{userId}")
-    BookDTO getBookDetails(@PathVariable("bookId") Long bookId,
-                           @RequestParam("userId") Long userId);
+    @GetMapping("/livros/detalhes/{bookId}")
+    BookDTO getBookDetails(@PathVariable("bookId") Long bookId);
 
     // Listar todos os livros salvos de um usuário
-    @GetMapping("/livros/livrosSalvos/{userId}")
-    List<BookDTO> listSavedBooks(@PathVariable("userId") Long userId);
+    @GetMapping("/livros/meus-livros")
+    List<BookDTO> listSavedBooks();
 
     // Contar quantos livros finalizados o usuário tem
     @GetMapping("/livros/count-finished/{userId}")

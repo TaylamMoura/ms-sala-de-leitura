@@ -9,9 +9,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-
-import com.reading.ms_sessions.security.JwtService;
-import io.jsonwebtoken.Claims;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -19,33 +16,18 @@ public class StatisticsService {
 
     private final StatisticsRepository statisticsRepository;
     private final CatalogClient catalogClient;
-    private final JwtService jwtService; // injeta o serviço que valida/decodifica o token
 
     public StatisticsService(StatisticsRepository statisticsRepository,
-                             CatalogClient catalogClient,
-                             JwtService jwtService) {
+                             CatalogClient catalogClient) {
         this.statisticsRepository = statisticsRepository;
         this.catalogClient = catalogClient;
-        this.jwtService = jwtService;
     }
 
     //GERA ESTATÍSTICAS GERAIS DE TODOS LIVROS LIDOS PELO USUÁRIO
-    public OverallStatisticsDTO overallStatistics(String token) {
-        Claims claims = jwtService.validateToken(token);
-        //Long userId = Long.valueOf(claims.getSubject());
-
-        String subject = claims.getSubject();
-        System.out.println(">>> DEBUG: Subject extraído do token: " + subject); // VEJA ISSO NO LOG
-
-        if (subject == null || subject.equals("null")) {
-            throw new RuntimeException("Usuário não identificado no token!");
-        }
-
-        Long userId = Long.valueOf(subject);
-
+    public OverallStatisticsDTO overallStatistics(Long userId) {
 
         // Busca livros e garante que não venha nulo
-        List<BookDTO> allBooks = catalogClient.listSavedBooks(userId);
+        List<BookDTO> allBooks = catalogClient.listSavedBooks();
         if (allBooks == null) allBooks = List.of();
 
         List<BookDTO> finishedBooks = allBooks.stream()
@@ -96,15 +78,12 @@ public class StatisticsService {
 
 
     //GERA ESTATÍSTICAS DE UM LIVRO ESPECÍFICO
-    public BookStatisticsDTO bookStatistics(String token, Long bookId) {
-        Long userId = jwtService.extractUserId(token);
+    public BookStatisticsDTO bookStatistics(Long userId, Long bookId) {
 
         Number days = (Number) statisticsRepository.calculateDaysToFinishBook(bookId, userId).orElse(0);
         int daysRead = days.intValue();
 
         double avgPagesPerDay = statisticsRepository.calculateAveragePagesPerDay(bookId, userId).orElse(0.0);
-
-        //Arredondar os decimais
         double rawReadingSpeed = statisticsRepository.calculateReadingSpeed(bookId, userId).orElse(0.0);
         double readingSpeed = Math.round(rawReadingSpeed * 10.0) / 10.0;
 

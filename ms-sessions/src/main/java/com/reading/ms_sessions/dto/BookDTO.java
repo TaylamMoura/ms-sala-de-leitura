@@ -1,6 +1,5 @@
 package com.reading.ms_sessions.dto;
 
-
 public record BookDTO(
         Long bookId,
         String title,
@@ -9,5 +8,4 @@ public record BookDTO(
         String coverUrl,
         int publicationYear,
         boolean finished,
-        String country,
-        Long userId) {}
+        String country) {}
