@@ -45,7 +45,7 @@ window.onload = async function() {
 // 4. BUSCA LIVRO NA API (GOOGLE BOOKS VIA GATEWAY)
 async function buscarLivroPorTitulo(titulo) {
   try {
-    const response = await fetch(`${GATEWAY_URL}/livros/pesquisarLivro?title=${titulo}`, {
+    const response = await fetch(`${GATEWAY_URL}/livros/pesquisar?title=${titulo}`, {
         method: 'GET',
         headers: getAuthHeader()
     });
@@ -101,7 +101,7 @@ document.getElementById('buscarLivroForm').onsubmit = async function(event) {
 
 // 6. ADICIONAR LIVRO AO BANCO DE DADOS
 async function adicionarLivroAoBanco(livro) {
-    const userId = localStorage.getItem('userId');
+
     const livroData = {
         title: livro.title,
         author: livro.author || 'Autor desconhecido',
@@ -110,11 +110,10 @@ async function adicionarLivroAoBanco(livro) {
         publicationYear: livro.publicationYear || new Date().getFullYear(),
         finished: false,
         country: livro.country || 'N/A',
-        userId: parseInt(userId)
     };
 
     try {
-        const response = await fetch(`${GATEWAY_URL}/livros/salvarLivro`, {
+        const response = await fetch(`${GATEWAY_URL}/livros/salvar`, {
             method: 'POST',
             headers: getAuthHeader(),
             body: JSON.stringify(livroData)
@@ -132,13 +131,12 @@ async function adicionarLivroAoBanco(livro) {
 }
 
 // 7. EXIBIR LIVROS NA ESTANTE (PÁGINA INICIAL)
-// 7. EXIBIR LIVROS NA ESTANTE (PÁGINA INICIAL)
 async function ExibirLivrosNaPag() {
     const userId = localStorage.getItem('userId');
     const minhasLeiturasDiv = document.getElementById('minhasLeituras');
 
     try {
-        const response = await fetch(`${GATEWAY_URL}/livros/livrosSalvos/${userId}`, {
+        const response = await fetch(`${GATEWAY_URL}/livros/meus-livros`, {
             method: 'GET',
             headers: getAuthHeader()
         });

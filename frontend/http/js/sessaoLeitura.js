@@ -97,7 +97,7 @@ function finalizarSessao(){
 //BUSCAR A PÁGINA QUE USUÁRIO PAROU PARA FAZER A VERIFICAÇÃO
 async function buscarUltimaPagina(livroId) {
     try {
-        const response = await fetch(`${GATEWAY_URL}/sessao-leitura/ultima-pagina/${userId}/${livroId}`, {
+        const response = await fetch(`${GATEWAY_URL}/sessao-leitura/ultima-pagina/${livroId}`, {
             method: 'GET',
             headers: getAuthHeader()
         });
@@ -131,7 +131,6 @@ async function enviarSessaoLeitura() {
     const tempoLeituraSegundos = Math.floor(tempoDecorrido / 1000);
 
     const corpoRequisicao = {
-        userId: parseInt(userId),
         bookId: parseInt(livroId),
         lastPage: paginaInserida,
         readingTime: tempoLeituraSegundos
@@ -199,7 +198,7 @@ async function exibirCapaLivro() {
 
     try {
         // 2. Corrigi a URL: tirei as chaves {} e usei as variáveis certas com a barra /
-        const response = await fetch(`${GATEWAY_URL}/livros/exibirDados/${livroId}/${userId}`, {
+        const response = await fetch(`${GATEWAY_URL}/livros/detalhes/${livroId}`, {
             headers: getAuthHeader()
         });
 

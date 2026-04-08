@@ -131,11 +131,10 @@
 
     async function buscarCapaResumo(id) {
         const GATEWAY_URL = 'http://localhost:8080';
-        const userId = localStorage.getItem('userId');
         const token = localStorage.getItem('token');
 
         try {
-            const response = await fetch(`${GATEWAY_URL}/livros/exibirDados/${id}/${userId}`, {
+            const response = await fetch(`${GATEWAY_URL}/livros/detalhes/${id}`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             if (response.ok) {

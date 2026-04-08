@@ -2,7 +2,6 @@ const GATEWAY_URL = 'http://localhost:8080';
 
 const urlParams = new URLSearchParams(window.location.search);
 const bookId = urlParams.get('bookId');
-const userId = localStorage.getItem('userId');
 
 function getAuthHeader(){
   return{
@@ -19,7 +18,7 @@ async function atualizarBarraProgresso() {
 
     try {
         // 1. Busca a última página lida no ms-sessions via Gateway
-        const responseSession = await fetch(`${GATEWAY_URL}/sessao-leitura/ultima-pagina/${userId}/${bookId}`, {
+        const responseSession = await fetch(`${GATEWAY_URL}/sessao-leitura/ultima-pagina/${bookId}`, {
             headers: getAuthHeader()
         });
 
@@ -27,7 +26,7 @@ async function atualizarBarraProgresso() {
         const paginaFinal = await responseSession.json();
 
         // 2. Busca o total de páginas no ms-catalog via Gateway
-        const responseLivro = await fetch(`${GATEWAY_URL}/livros/exibirDados/${bookId}/${userId}`, {
+        const responseLivro = await fetch(`${GATEWAY_URL}/livros/detalhes/${bookId}` , {
             headers: getAuthHeader()
         });
 
@@ -56,7 +55,7 @@ async function atualizarBarraProgresso() {
 //FUNÇÃO PARA EXIBIR AS INFORMAÇÕES DO LIVRO NA PÁGINA
 async function exibirInformacoesLivro() {
   try {
-        const response = await fetch(`${GATEWAY_URL}/livros/exibirDados/${bookId}/${userId}`, {
+        const response = await fetch(`${GATEWAY_URL}/livros/detalhes/${bookId}`, {
             method: 'GET',
             headers: getAuthHeader()
         });
@@ -104,7 +103,7 @@ async function enviarEdicaoLivro() {
     };
 
     try {
-        const response = await fetch(`${GATEWAY_URL}/livros/editarLivro/${bookId}/${userId}`, {
+        const response = await fetch(`${GATEWAY_URL}/livros/editar/${bookId}`, {
             method: 'PUT',
             headers: getAuthHeader(),
             body: JSON.stringify(dadosAtualizados)
@@ -141,7 +140,7 @@ function fecharConfirmacaoExclusao() {
 async function excluirLivroConfirmado() {
 
   try {
-    const response = await fetch(`${GATEWAY_URL}/livros/excluirLivro/${bookId}/${userId}`, {
+    const response = await fetch(`${GATEWAY_URL}/livros/excluir/${bookId}`, {
       method: 'DELETE',
       headers: getAuthHeader()
     });
