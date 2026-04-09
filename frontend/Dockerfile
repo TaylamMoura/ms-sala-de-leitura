@@ -1,16 +1,15 @@
-# Usa a imagem oficial do Nginx
+# Base image
 FROM nginx:alpine
 
-# Remove a configuração padrão
+# Limpa o diretório padrão do servidor
 RUN rm -rf /usr/share/nginx/html/*
 
-# Copia os arquivos do frontend para a pasta servida pelo Nginx
+# Copia os recursos do frontend para o container
 COPY ./http/ /usr/share/nginx/html
 COPY http/js/ /usr/share/nginx/html/js/
 COPY http/img/ /usr/share/nginx/html/img/
 
-# Expõe a porta 80
 EXPOSE 80
 
-# Comando padrão do Nginx
+# Inicializa o Nginx
 CMD ["nginx", "-g", "daemon off;"]
