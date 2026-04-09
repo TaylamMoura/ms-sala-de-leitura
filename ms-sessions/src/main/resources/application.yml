@@ -54,3 +54,17 @@ management:
 
 jwt:
   secret: ${JWT_SECRET}
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+  openapi:
+    info:
+      title: Serviço de Sessões de Leitura (ms-sessions)
+      description: API para controle de sessões de leitura e estatísticas.
+      version: 1.0.0
+    servers:
+      - url: http://localhost:8080
+        description: Gateway Server
