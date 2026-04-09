@@ -1,4 +1,4 @@
-package com.reading.ms_catalog.service;
+package com.reading.ms_catalog.client;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;

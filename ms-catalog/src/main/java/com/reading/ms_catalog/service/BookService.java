@@ -3,6 +3,7 @@ package com.reading.ms_catalog.service;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.reading.ms_catalog.client.APIConnection;
 import com.reading.ms_catalog.dto.BookUpdate;
 import com.reading.ms_catalog.entity.Book;
 import com.reading.ms_catalog.repository.BookRepository;
