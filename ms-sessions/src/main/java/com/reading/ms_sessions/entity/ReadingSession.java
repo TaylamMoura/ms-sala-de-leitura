@@ -14,7 +14,8 @@ import java.time.LocalDateTime;
 @Entity(name = "reading_sessions")
 @Table(name = "sessions")
 
-public class ReadingSession {
+public class
+ReadingSession {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

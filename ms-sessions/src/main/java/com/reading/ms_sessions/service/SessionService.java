@@ -22,12 +22,13 @@ public class SessionService {
         this.catalogClient = catalogClient;
     }
 
+
+    @Transactional
     public ReadingSession startSession(StartSessionDTO dto, Long userId) {
         ReadingSession session = new ReadingSession();
-        session.setUserId(userId); // Usa o ID do Header
+        session.setUserId(userId);
         session.setBookId(dto.bookId());
 
-        // Busca a última página baseada no usuário logado
         int lastPage = sessionsRepository.findTopByUserIdAndBookIdOrderByEndTimeDesc(userId, dto.bookId())
                 .map(ReadingSession::getEndPage)
                 .orElse(0);
@@ -40,12 +41,10 @@ public class SessionService {
 
     @Transactional
     public ReadingSession endSession(EndSessionDTO dto, Long userId) {
-        // Busca a sessão ativa/anterior deste usuário
         int startPage = sessionsRepository.findTopByUserIdAndBookIdOrderByEndTimeDesc(userId, dto.bookId())
                 .map(ReadingSession::getEndPage)
                 .orElse(0);
 
-        // Busca Total de páginas no ms-catalog
         BookDTO book = catalogClient.getBookDetails(dto.bookId());
 
         if (dto.lastPage() >= book.pages()) {
@@ -58,7 +57,6 @@ public class SessionService {
         session.setStartPage(startPage);
         session.setEndPage(dto.lastPage());
         session.setReadingTime(dto.readingTime());
-
         LocalDateTime timeNow = LocalDateTime.now();
         session.setEndTime(timeNow);
         session.setStartTime(timeNow.minusSeconds(dto.readingTime()));

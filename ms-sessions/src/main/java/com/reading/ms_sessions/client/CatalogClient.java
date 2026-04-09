@@ -6,7 +6,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@FeignClient(name = "ms-catalog") // Consul resolve esse nome
+// Cliente HTTP para comunicação com o microserviço de catálogo via OpenFeign.
+@FeignClient(name = "ms-catalog")
 public interface CatalogClient {
 
     // Buscar detalhes de um livro específico para um usuário

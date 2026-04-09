@@ -23,6 +23,7 @@ public class SessionController {
         this.sessionsRepository = sessionsRepository;
     }
 
+
     @PostMapping("/iniciar")
     public ResponseEntity<SessionDTO> startSession(@Valid @RequestBody StartSessionDTO dto,
                                                    @RequestHeader("X-User-Id") Long userId) {
@@ -32,6 +33,7 @@ public class SessionController {
         return ResponseEntity.status(HttpStatus.CREATED).body(new SessionDTO(readingSession));
     }
 
+
     @PostMapping("/finalizar")
     public ResponseEntity<SessionDTO> finishedSession(@Valid @RequestBody EndSessionDTO dto,
                                                       @RequestHeader("X-User-Id") Long userId) {
@@ -39,6 +41,7 @@ public class SessionController {
 
         return ResponseEntity.status(HttpStatus.OK).body(new SessionDTO(readingSession));
     }
+
 
     @GetMapping("/ultima-pagina/{bookId}")
     public ResponseEntity<Integer> getLastPage(@RequestHeader("X-User-Id") Long userId,

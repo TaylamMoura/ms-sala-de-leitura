@@ -7,6 +7,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
+//Configuração que intercepta as chamadas do Feign para preencher o header "X-User-Id",
+// para identificação do usuário entre os microsserviços.
 @Configuration
 public class FeignInterceptorConfig {
 
