@@ -13,11 +13,9 @@ document.addEventListener("DOMContentLoaded", () => {
     exibirCapaLivro();
 });
 
-
 //CAPTURAR ID DO LIVRO
 const urlParams = new URLSearchParams(window.location.search);
 const livroId = urlParams.get('bookId');
-const userId = localStorage.getItem('userId');
 
 
 //CONTROLE DO CRONÔMETRO
@@ -30,7 +28,6 @@ let intervalo = null;
 function iniciarSessao(){
   if (!cronometroAtivo) {
     cronometroAtivo = true;
-    // evita múltiplos setInterval
     if (!intervalo) {
       intervalo = setInterval(() => {
         tempoDecorrido += 1000;
@@ -39,7 +36,7 @@ function iniciarSessao(){
     }
   }
 
-  // mostra/oculta botões (garanta que existam os ids no HTML)
+  // mostra/oculta botões
   const btnStart = document.getElementById("iniciarSessao");
   const btnPause = document.getElementById("pausarSessao");
   const btnStop  = document.getElementById("finalizarSessao");
@@ -47,6 +44,7 @@ function iniciarSessao(){
   if (btnPause) btnPause.classList.remove('hidden');
   if (btnStop)  btnStop.classList.remove('hidden');
 }
+
 
 function pausarSessao(){
   cronometroAtivo = false;
@@ -63,6 +61,7 @@ function pausarSessao(){
   if (btnStop)  btnStop.classList.remove('hidden');
 }
 
+
 function atualizarCronometro(){
   const minutos = Math.floor(tempoDecorrido / 60000);
   const segundos = Math.floor((tempoDecorrido % 60000) / 1000);
@@ -72,23 +71,20 @@ function atualizarCronometro(){
   if (el) el.textContent = `${minutosFormatados}:${segundosFormatados}`;
 }
 
+
 function finalizarSessao(){
   if (tempoDecorrido < 1000) {
     alert("Você não pode finalizar uma sessão sem tempo de leitura!");
     return;
   }
 
-  // garante que o intervalo pare
+
   cronometroAtivo = false;
   if (intervalo) {
     clearInterval(intervalo);
     intervalo = null;
   }
-
-  // atualiza UI do cronômetro (opcional)
   atualizarCronometro();
-
-  // abre modal (função única)
   abrirModal();
 
   console.log("tempo decorrido (ms):", tempoDecorrido);
@@ -111,7 +107,6 @@ async function buscarUltimaPagina(livroId) {
 }
 
 
-//FUNÇÃO PARA ENVIAR DADOS AO BACK-END
 async function enviarSessaoLeitura() {
     const inputPagina = document.getElementById("inputPaginas");
     const paginaInserida = parseInt(inputPagina.value, 10);
@@ -144,16 +139,12 @@ async function enviarSessaoLeitura() {
         });
 
         if (response.ok) {
-            // Pegamos o texto formatado do cronômetro para exibir no resumo
             const tempoFormatado = document.getElementById('cronometro').textContent;
-
-            // Redireciona para a página de fim de sessão com os dados na URL
             const params = new URLSearchParams({
                 bookId: livroId,
                 tempo: tempoFormatado,
                 pagina: paginaInserida
             });
-
             window.location.href = `fim-sessao.html?${params.toString()}`;
         } else {
             const erro = await response.json();
@@ -164,13 +155,14 @@ async function enviarSessaoLeitura() {
     }
 }
 
+
 function cancelarEnvio() {
     alert('Envio cancelado.');
     tempoDecorrido = 0;
     atualizarCronometro();
 }
 
-//MODAL
+
 function abrirModal() {
   const modal = document.getElementById("modal-paginas");
   if (modal) {
@@ -178,6 +170,7 @@ function abrirModal() {
     modal.setAttribute("aria-hidden", "false");
   }
 }
+
 
 function fecharModal() {
   const modal = document.getElementById("modal-paginas");
@@ -188,16 +181,13 @@ function fecharModal() {
 }
 
 
-
 async function exibirCapaLivro() {
-    // 1. Use 'livroId' que é o nome da variável que você declarou lá no topo
-    if (!livroId || !userId) {
-        console.error("ID do livro ou do usuário não encontrado no script.");
+    if (!livroId ) {
+        console.error("ID do livro não encontrado no script.");
         return;
     }
 
     try {
-        // 2. Corrigi a URL: tirei as chaves {} e usei as variáveis certas com a barra /
         const response = await fetch(`${GATEWAY_URL}/livros/detalhes/${livroId}`, {
             headers: getAuthHeader()
         });
@@ -205,8 +195,6 @@ async function exibirCapaLivro() {
         if (response.ok) {
             const livro = await response.json();
 
-            // 3. Verifique se no seu Java o campo é 'coverUrl' ou 'urlCapa'
-            // Pelos nossos chats anteriores, o DTO do seu Java usa 'coverUrl'
             const campoCapa = livro.coverUrl || livro.urlCapa;
 
             const elementoCapa = document.getElementById('capaLivro');
@@ -226,10 +214,8 @@ function voltarParaDetalhes(event) {
     event.preventDefault(); // Impede o link de recarregar a página antes da hora
 
     if (livroId) {
-        // Redireciona passando o ID que já temos na variável global livroId
         window.location.href = `livro-detalhes.html?bookId=${livroId}`;
     } else {
-        // Caso ocorra algum erro e não tenha ID, volta para a estante principal
         window.location.href = 'home.html';
     }
 }

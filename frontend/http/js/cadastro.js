@@ -40,7 +40,7 @@ inputConfirmarSenha.addEventListener("input", () => {
     }
 });
 
-
+//PROCESSA O CADASTRO: VALIDA INPUTS, FORMATA JSON E GERENCIA A RESPOSTA AO SERVIDOR
 formCadastro.addEventListener("submit", async (e) => {
     e.preventDefault(); 
 
@@ -51,7 +51,6 @@ formCadastro.addEventListener("submit", async (e) => {
     const senhaHTML = inputSenha.value;
     const confirmarSenha = inputConfirmarSenha.value;
 
-    //VERIFICAÇÃO SE AS SENHAS SÃO IGUAIS ANTES DE ENVIAR
     if (senhaHTML !== confirmarSenha) {
         alert("As senhas não coincidem! Por favor, tente novamente.");
         return;
@@ -64,7 +63,6 @@ formCadastro.addEventListener("submit", async (e) => {
         password: senhaHTML
     };
 
-    //ENVIO DO FORMULÁRIO
     try {
         const response = await fetch(`${GATEWAY_URL}/usuarios`, {
             method: "POST",
@@ -78,13 +76,11 @@ formCadastro.addEventListener("submit", async (e) => {
             alert("Cadastro realizado com sucesso!");
             window.location.href = "index.html";
         } else {
-            // Primeiro verificamos se a resposta é realmente um JSON
             const contentType = response.headers.get("content-type");
             if (contentType && contentType.includes("application/json")) {
                   const errorData = await response.json();
                   alert("Erro ao cadastrar: " + (errorData.message || "Erro no servidor."));
             } else {
-                        // Se não for JSON (como o erro 401 do Gateway), lemos como texto
                    const errorText = await response.text();
                    console.error("Erro do servidor (não JSON):", errorText);
                    alert(`Erro ${response.status}: O servidor recusou a requisição.`);

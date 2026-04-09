@@ -10,14 +10,11 @@ function getAuthHeader(){
   };
 }
 
-
-//FUNÇÃO PARA ATUALIZAR A BARRA DE PROGRESSO
-
 async function atualizarBarraProgresso() {
     if (!bookId) return;
 
     try {
-        // 1. Busca a última página lida no ms-sessions via Gateway
+        // Busca a última página lida no ms-sessions via Gateway
         const responseSession = await fetch(`${GATEWAY_URL}/sessao-leitura/ultima-pagina/${bookId}`, {
             headers: getAuthHeader()
         });
@@ -25,7 +22,7 @@ async function atualizarBarraProgresso() {
         if (!responseSession.ok) return;
         const paginaFinal = await responseSession.json();
 
-        // 2. Busca o total de páginas no ms-catalog via Gateway
+        // Busca o total de páginas no ms-catalog via Gateway
         const responseLivro = await fetch(`${GATEWAY_URL}/livros/detalhes/${bookId}` , {
             headers: getAuthHeader()
         });
@@ -34,7 +31,6 @@ async function atualizarBarraProgresso() {
         const livro = await responseLivro.json();
         const totalPaginas = livro.pages;
 
-        // Atualiza os elementos na tela com segurança
         if (document.getElementById("paginaAtual"))
             document.getElementById("paginaAtual").innerText = paginaFinal;
 
@@ -52,7 +48,6 @@ async function atualizarBarraProgresso() {
 }
 
 
-//FUNÇÃO PARA EXIBIR AS INFORMAÇÕES DO LIVRO NA PÁGINA
 async function exibirInformacoesLivro() {
   try {
         const response = await fetch(`${GATEWAY_URL}/livros/detalhes/${bookId}`, {
@@ -69,9 +64,7 @@ async function exibirInformacoesLivro() {
             document.getElementById('paginasLivro').innerText = livro.pages;
             document.getElementById('anoPublicacao').innerText = livro.publicationYear;
             document.getElementById('paisOrigem').innerText = livro.country;
-            
-            //VER AQUI DEPOIS
-            // Atualiza barra de progresso (lógica do ms-session)
+
             atualizarBarraProgresso(bookId, livro.pages);
         }
     } catch (error) {
@@ -80,19 +73,16 @@ async function exibirInformacoesLivro() {
 }
 
 
-// MODAL DE EDIÇÃO
-// Função para mostrar o formulário de edição
 function mostrarFormularioEdicao() {
   document.getElementById('formulario-edicao').style.display = 'block';
 }
 
-// Função para fechar o formulário de edição
+
 function fecharFormularioEdicao() {
   document.getElementById('formulario-edicao').style.display = 'none';
 }
 
 
-//FUNÇÃO PARA ENVIAR A EDIÇÃO DO LIVRO AO SERVIDOR
 async function enviarEdicaoLivro() {
   const dadosAtualizados = {
         title: document.getElementById('inputTitulo').value,
@@ -110,7 +100,7 @@ async function enviarEdicaoLivro() {
         });
 
         if (response.ok) {
-            exibirInformacoesLivro(); // Recarrega os dados na tela
+            exibirInformacoesLivro();
             fecharFormularioEdicao();
         }
     } catch (error) {
@@ -119,19 +109,16 @@ async function enviarEdicaoLivro() {
   }
 
 
-// FUNÇÃO PARA CANCELAR EDIÇÃO DO LIVRO
 function cancelarEdicao() {
   document.getElementById('formulario-edicao').style.display = 'none';
 }
 
 
-// MODAL EXCLUIR
-// Função para mostrar o modal de confirmação de exclusão
 function mostrarConfirmacaoExclusao() {
   document.getElementById('confirmacaoExclusaoModal').style.display = 'block';
 }
 
-// Função para fechar o modal de confirmação de exclusão
+
 function fecharConfirmacaoExclusao() {
   document.getElementById('confirmacaoExclusaoModal').style.display = 'none';
 }
@@ -171,8 +158,6 @@ function iniciarSessao() {
     
 }
 
-
-//FUNÇÃO PARA CARREGAR PAGE ESTATISTICA-LIVRO
 function redirecionarEstatisticasLivro() {
   if(bookId){
       window.location.href = `estatistica-livro.html?bookId=${bookId}`;
@@ -182,11 +167,9 @@ function redirecionarEstatisticasLivro() {
 
 }
 
-
-// Inicia a atualização automática a cada 30 segundos
+// Atualiza a barra de progresso a cada 30 segundos
 setInterval(atualizarBarraProgresso, 30000);
 
-// Chama uma vez ao carregar para não esperar 30s
 window.onload = function(){
   exibirInformacoesLivro();
   atualizarBarraProgresso();

@@ -31,7 +31,6 @@ async function mostrarEstatisticasLivro() {
     }
 
     try {
-        // 1. Busca dados básicos do livro
         const respLivro = await fetch(`${GATEWAY_URL}/livros/exibirDados/${bookId}/${userId}`, {
               headers: getAuthHeader()
         });
@@ -48,7 +47,7 @@ async function mostrarEstatisticasLivro() {
             document.getElementById("country").textContent = livro.country || "N/A";
         }
 
-        // 2. Busca as estatísticas do ms-statistics
+        // Busca as estatísticas do ms-statistics
         const respStats = await fetch(`${GATEWAY_URL}/estatisticas/livro/${bookId}`, {
             headers: getAuthHeader()
         });

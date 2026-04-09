@@ -1,7 +1,6 @@
 const GATEWAY_URL = 'http://localhost:8080';
 const defaultImageUrl = 'https://via.placeholder.com/150x225?text=Sem+Capa';
 
-// 1. FUNÇÃO AUXILIAR PARA PEGAR O TOKEN
 function getAuthHeader() {
     const token = localStorage.getItem('token');
     return {
@@ -10,7 +9,6 @@ function getAuthHeader() {
     };
 }
 
-// 2. FUNÇÃO PARA VERIFICAR AUTENTICAÇÃO
 async function verificarAutenticacao() {
     const token = localStorage.getItem('token');
     if (!token) {
@@ -31,18 +29,15 @@ async function verificarAutenticacao() {
     }
 }
 
-// 3. ONLOAD UNIFICADO (Executa ao abrir a página)
 window.onload = async function() {
     await verificarAutenticacao();
-
-    // Garante que a modal comece escondida
     const modal = document.getElementById('resultadoModal');
     if (modal) modal.classList.add('hidden');
 
     ExibirLivrosNaPag();
 };
 
-// 4. BUSCA LIVRO NA API (GOOGLE BOOKS VIA GATEWAY)
+// BUSCA LIVRO NA API (GOOGLE BOOKS VIA GATEWAY)
 async function buscarLivroPorTitulo(titulo) {
   try {
     const response = await fetch(`${GATEWAY_URL}/livros/pesquisar?title=${titulo}`, {
@@ -60,7 +55,7 @@ async function buscarLivroPorTitulo(titulo) {
   }
 }
 
-// 5. EVENTO DE PESQUISA (FORMULÁRIO)
+//FORMULÁRIO DE PESQUISA
 document.getElementById('buscarLivroForm').onsubmit = async function(event) {
     event.preventDefault();
     const titulo = document.getElementById('tituloLivro').value;
@@ -77,7 +72,6 @@ document.getElementById('buscarLivroForm').onsubmit = async function(event) {
             const tituloLivro = livro.title;
             const capaLivro = livro.coverUrl || defaultImageUrl;
 
-            // Criar card do resultado com Tailwind
             const card = document.createElement('div');
             card.className = 'flex items-center gap-4 p-4 bg-white rounded-2xl shadow-sm border border-leitura-verde/10 hover:bg-leitura-creme cursor-pointer transition-all active:scale-95';
 
@@ -99,7 +93,7 @@ document.getElementById('buscarLivroForm').onsubmit = async function(event) {
     }
 };
 
-// 6. ADICIONAR LIVRO AO BANCO DE DADOS
+
 async function adicionarLivroAoBanco(livro) {
 
     const livroData = {
@@ -121,7 +115,7 @@ async function adicionarLivroAoBanco(livro) {
 
         if (response.ok) {
             document.getElementById('resultadoModal').classList.add('hidden');
-            window.location.reload(); // Recarrega para mostrar na estante
+            window.location.reload();
         } else {
             alert("Erro ao salvar o livro.");
         }
@@ -130,7 +124,7 @@ async function adicionarLivroAoBanco(livro) {
     }
 }
 
-// 7. EXIBIR LIVROS NA ESTANTE (PÁGINA INICIAL)
+
 async function ExibirLivrosNaPag() {
     const userId = localStorage.getItem('userId');
     const minhasLeiturasDiv = document.getElementById('minhasLeituras');
@@ -145,21 +139,17 @@ async function ExibirLivrosNaPag() {
             const livros = await response.json();
             minhasLeiturasDiv.innerHTML = '';
 
-            // Usamos for...of para poder usar await dentro do loop
             for (const livro of livros) {
                 const capa = livro.coverUrl || defaultImageUrl;
                 let tagHtml = '';
 
-                // LÓGICA DAS TAGS
                 if (livro.finished) {
-                    // Se o livro está marcado como finalizado no banco
                     tagHtml = `
                         <div class="absolute -top-3 -right-3 bg-leitura-laranja text-white text-[11px] font-bold px-3 py-1.5 rounded-full shadow-lg z-20 uppercase tracking-[0.1em] border-2 border-white flex items-center justify-center shadow-black/20"
                                 style="font-family: 'Tenor Sans', sans-serif;">
                                 Lido
                         </div>`;
                 } else {
-                    // Se não está finalizado, buscamos a última página no ms-sessions
                     try {
                         const respSessao = await fetch(`${GATEWAY_URL}/sessao-leitura/ultima-pagina/${userId}/${livro.bookId}`, {
                             headers: getAuthHeader()
@@ -211,7 +201,7 @@ async function ExibirLivrosNaPag() {
     }
 }
 
-// 8. CONTROLES DA MODAL (FECHAR)
+
 function fecharModal() {
     document.getElementById('resultadoModal').classList.add('hidden');
 }
@@ -223,7 +213,7 @@ window.onclick = function(event) {
     if (event.target == modal) fecharModal();
 };
 
-// 9. FUNÇÕES DE NAVEGAÇÃO
+
 function fazerLogout() {
     localStorage.clear();
     window.location.href = 'index.html';

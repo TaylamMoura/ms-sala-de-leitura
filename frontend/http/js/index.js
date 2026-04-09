@@ -4,14 +4,14 @@ function abrirFormularioCadastro() {
     window.location.href = 'cadastro.html';
 }
 
-//FUNÇÃO PARA ABRIR MODAL DE LOGIN
+
 function abrirFormularioLogin() {
     const modalLogin = document.getElementById("formulario-login");
     modalLogin.style.display = 'block';
     modalLogin.setAttribute("aria-hidden", "false");
 }
 
-//FUNÇÃO PARA FECHAR MODAL DE LOGIN
+
 function fecharFormularioLogin(){
     const modalLogin = document.getElementById("formulario-login");
     modalLogin.style.display = 'none';
@@ -19,7 +19,6 @@ function fecharFormularioLogin(){
 }
 
 
-//FUNÇÃO DE LOGIN
 async function fazerLogin(e){
     e.preventDefault();
     

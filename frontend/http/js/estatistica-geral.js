@@ -14,7 +14,7 @@ function formatarHorasMinutos(segundos) {
     return `${horas} hora${horas !== 1 ? "s" : ""} e ${minutos} minutos`;
 }
 
-// Função para carregar estatísticas GERAIS
+
 async function mostrarEstatisticaGeral() {
     try {
         const response = await fetch(`${GATEWAY_URL}/estatisticas/geral`, {
@@ -36,7 +36,6 @@ async function mostrarEstatisticaGeral() {
         const campoTotalPaises = document.getElementById("totalPaisesLidos");
         if (campoTotalPaises) campoTotalPaises.textContent = data.totalCountriesRead || 0;
 
-        // 2. Ranking de Livros (Destaque e Secundários)
         const ranking = data.rankingBooks;
         if (ranking && ranking.length > 0) {
             document.getElementById("capaLivroPrincipal").src = ranking[0].coverUrl || 'img/capa-livro.png';
@@ -46,7 +45,6 @@ async function mostrarEstatisticaGeral() {
             renderizarLivrosSecundarios(ranking.slice(1, 5));
         }
 
-        // 3. Ranking de Países (Top 3)
         renderizarRankingPaises(data.topCountries);
 
     } catch (error) {
@@ -86,7 +84,6 @@ function renderizarRankingPaises(paises) {
     paises.forEach((item, index) => {
         let bgColor, badgeColor, textColor, countColor;
 
-        // Lógica de Cores por Posição
         if (index === 0) { // 1º Lugar
             bgColor = 'bg-leitura-laranja/5 border border-leitura-laranja/10';
             badgeColor = 'bg-leitura-laranja text-white';
@@ -97,7 +94,7 @@ function renderizarRankingPaises(paises) {
             badgeColor = 'bg-leitura-verde/30 text-leitura-verde-escuro';
             textColor = 'text-gray-700';
             countColor = 'text-leitura-verde-escuro/70';
-        } else { // 3º Lugar em diante
+        } else { // 3º Lugar
             bgColor = 'bg-leitura-laranja/5';
             badgeColor = 'bg-leitura-laranja/20 text-leitura-laranja';
             textColor = 'text-gray-700';
