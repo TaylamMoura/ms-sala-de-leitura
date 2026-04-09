@@ -7,12 +7,9 @@ import com.reading.ms_catalog.dto.BookUpdate;
 import com.reading.ms_catalog.entity.Book;
 import com.reading.ms_catalog.repository.BookRepository;
 import com.reading.ms_catalog.dto.BookDTO;
-import jakarta.validation.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.GetMapping;
-
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -63,7 +60,7 @@ public class BookService {
                         String publishedDate = volumeInfo.has("publishedDate") ? volumeInfo.get("publishedDate").getAsString() : "0000";
                         int year = Integer.parseInt(publishedDate.split("-")[0]);
 
-                        listBooks.add(new BookDTO(null, title, author, pageCount, thumbnail, year, false, "N/A", null, null));
+                        listBooks.add(new BookDTO(null, title, author, pageCount, thumbnail, year, false, "N/A", null));
                     } catch (Exception e) {
                         continue;
                     }
@@ -139,5 +136,9 @@ public class BookService {
         Book book = repository.findByBookIdAndUserId(bookId, userId)
                 .orElseThrow(()-> new RuntimeException("Livro não encontrado"));
         return new BookDTO(book, null);
+    }
+
+    public int getTotalFinishedBooks(Long userId) {
+        return  repository.countByUserIdAndFinishedTrue(userId);
     }
 }

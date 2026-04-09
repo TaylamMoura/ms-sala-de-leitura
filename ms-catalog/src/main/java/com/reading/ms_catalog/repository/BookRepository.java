@@ -12,6 +12,5 @@ public interface BookRepository extends JpaRepository<Book, Long> {
 
     Optional<Book> findByBookIdAndUserId(Long bookId, Long userId);
 
-    List<Book> findByUserIdAndFinishedTrue(Long userId);
-
+    int countByUserIdAndFinishedTrue(Long userId);
 }

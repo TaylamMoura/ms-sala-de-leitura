@@ -97,16 +97,24 @@ public class BookController {
                 bookToUpdate.getPublicationYear(),
                 bookToUpdate.getFinished(),
                 bookToUpdate.getCountry(),
-                bookToUpdate.getUserId(),
                 null
         );
         return ResponseEntity.ok(bookDTO);
     }
 
-    //endpoint usado em ms-session
-    @PutMapping("/{bookId}/finalizar/{userId}")
-    public ResponseEntity<Void> markBookAsFinished(@PathVariable Long bookId, @PathVariable Long userId){
+    //endpoint usado em ms-session para marcar livro como finalizado
+    @PutMapping("/{bookId}/finalizar")
+    public ResponseEntity<Void> markBookAsFinished(@PathVariable Long bookId,
+                                                   @RequestHeader("X-User-Id") Long userId){
+
         bookService.markAsFinished(bookId, userId);
         return ResponseEntity.ok().build();
+    }
+
+
+    //endpoint usado em ms-session para contar quantos livros finalizados tem cada usuario
+    @GetMapping("/contar-finalizados")
+    public ResponseEntity<Integer> countFinished(@RequestHeader("X-User-Id") Long userId) {
+        return ResponseEntity.ok(bookService.getTotalFinishedBooks(userId));
     }
 }
