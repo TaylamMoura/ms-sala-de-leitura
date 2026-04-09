@@ -1,6 +1,5 @@
 package com.reading.ms_auth.security;
 
-
 import com.reading.ms_auth.service.JwtService;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
@@ -16,6 +15,7 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
+// Filtro que valida o Token JWT e autoriza o acesso do usuário às rotas protegidas.
 @Component
 public class JWTAuthenticationFilter extends OncePerRequestFilter {
 
@@ -58,6 +58,7 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
         filterChain.doFilter(request,response);
     }
 
+
     private  String extractToken(HttpServletRequest request){
         String header = request.getHeader("Authorization");
         if (header != null && header.startsWith("Bearer ")){
@@ -65,6 +66,7 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
         }
         return null;
     }
+
 
     @Override
     protected  boolean shouldNotFilter (HttpServletRequest request){

@@ -35,6 +35,7 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED).body(new NameResponseDTO(novoUser));
     }
 
+
     @PostMapping("/login")
     public ResponseEntity<?> loginUser(@RequestBody UserLoginDTO loginDTO,
                                           HttpServletResponse response) {
@@ -45,11 +46,6 @@ public class UserController {
                 User user = userService.findUserByEmail(loginDTO.email());
                 String token = jwtService.generateToken(user);
 
-
-                // Busca o usuário pelo email
-                //User user = userService.findUserByEmail(loginDTO.email());
-
-                // Retorna token + userId no corpo da resposta
                 Map<String, Object> responseBody = new HashMap<>();
                 responseBody.put("token", token);
                 responseBody.put("userId", user.getId());
@@ -74,14 +70,8 @@ public class UserController {
             String jwt = token.replace("Bearer ", "");
 
             Claims claims = jwtService.validateToken(jwt);
-
             Long userId = Long.valueOf(claims.getSubject());
-
-            //VER NECESSIDADE
             String email = claims.get("email", String.class);
-
-            // String email = claims.getSubject();
-            //User user = userService.findUserByEmail(email);
 
             return ResponseEntity.ok(userId);
 
@@ -91,5 +81,3 @@ public class UserController {
     }
 
 }
-
-//para colocar mensagens no status, usa-se <?> ao inves de <Usuario>

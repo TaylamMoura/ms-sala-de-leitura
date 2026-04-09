@@ -1,9 +1,7 @@
 server:
   port: 8081
 
-# ===============================================
-# CONFIGURAÇÃO SPRING (Geral e BD)
-# ===============================================
+#CONFIGURAÇÃO DO BD
 spring:
   application:
     name: ms-auth
@@ -19,9 +17,6 @@ spring:
         register-health-check: true
 
   datasource:
-    #url: jdbc:postgresql://localhost:5432/ms_auth
-    #username: user_ms
-    #password: mssala
     url: ${DB_URL}
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD_POSTGRES}
@@ -49,7 +44,7 @@ jwt:
 # CONFIGURAÇÃO DO EUREKA CLIENT (Desabilitado)
 eureka:
   client:
-    enabled: false # Desabilita a tentativa de registro no Eureka
+    enabled: false 
 
 auth:
   service:
@@ -66,7 +61,6 @@ springdoc:
       title: Serviço de Autenticação (ms-auth)
       description: API para gestão de usuários e geração de tokens JWT.
       version: 1.0.0
-    # ADICIONE AQUI:
     servers:
       - url: http://localhost:8080
         description: Gateway Server

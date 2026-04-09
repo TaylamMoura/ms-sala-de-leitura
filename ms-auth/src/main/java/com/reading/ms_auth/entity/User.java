@@ -1,8 +1,6 @@
 package com.reading.ms_auth.entity;
 
-
 import jakarta.persistence.*;
-import jakarta.validation.constraints.*;
 import lombok.EqualsAndHashCode;
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -34,7 +32,6 @@ public class User {
     private LocalDate birthDate;
 
 
-    //Getters and Setters
     public Long getId() {
         return id;
     }

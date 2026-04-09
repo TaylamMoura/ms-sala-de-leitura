@@ -1,6 +1,5 @@
 package com.reading.ms_auth.config;
 
-
 import com.reading.ms_auth.security.JWTAuthenticationFilter;
 import com.reading.ms_auth.service.JwtService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,11 +26,8 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(csrf -> csrf.disable())
-                // 1. Desabilita o CORS no MS (O Gateway já cuidou disso!)
                 .cors(cors -> cors.disable())
-
                 .authorizeHttpRequests(authz -> authz
-                        // 2. Garante que qualquer requisição OPTIONS passe reto
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 
                         .requestMatchers(EndpointRequest.to("health")).permitAll()
@@ -44,7 +40,6 @@ public class SecurityConfig {
                                 "/cadastro.html",
                                 "/index.html",
                                 "/favicon.ico",
-                                "/css/**",
                                 "/js/**",
                                 "/img/**",
                                 "/logout",

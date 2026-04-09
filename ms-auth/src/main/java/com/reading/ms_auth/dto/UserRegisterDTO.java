@@ -1,8 +1,6 @@
 package com.reading.ms_auth.dto;
 
-import com.reading.ms_auth.entity.User;
 import jakarta.validation.constraints.*;
-
 import java.time.LocalDate;
 
 //Para entrada de dados

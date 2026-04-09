@@ -1,20 +1,12 @@
 package com.reading.ms_auth.service;
 
-
 import com.reading.ms_auth.dto.UserRegisterDTO;
 import com.reading.ms_auth.entity.User;
 import com.reading.ms_auth.repository.UserRepository;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.security.Keys;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.nio.charset.StandardCharsets;
-import java.security.Key;
-import java.util.Date;
 
 @Service
 public class UserService {
@@ -39,6 +31,7 @@ public class UserService {
 
         return userRepository.save(user);
     }
+
 
     public boolean validateCredentials(String email, String password) {
         return userRepository.findByEmail(email)
