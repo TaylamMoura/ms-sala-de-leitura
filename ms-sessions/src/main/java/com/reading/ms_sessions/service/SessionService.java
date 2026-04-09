@@ -1,8 +1,9 @@
 package com.reading.ms_sessions.service;
 
+import com.reading.ms_sessions.client.CatalogClient;
 import com.reading.ms_sessions.dto.BookDTO;
-import com.reading.ms_sessions.dto.EndSessionDTO;
-import com.reading.ms_sessions.dto.StartSessionDTO;
+import com.reading.ms_sessions.dto.session.EndSessionDTO;
+import com.reading.ms_sessions.dto.session.StartSessionDTO;
 import com.reading.ms_sessions.entity.ReadingSession;
 import com.reading.ms_sessions.repository.SessionsRepository;
 import org.springframework.stereotype.Service;

@@ -1,8 +1,8 @@
 
 package com.reading.ms_sessions.controller;
 
-import com.reading.ms_sessions.dto.BookStatisticsDTO;
-import com.reading.ms_sessions.dto.OverallStatisticsDTO;
+import com.reading.ms_sessions.dto.statistics.BookStatisticsDTO;
+import com.reading.ms_sessions.dto.statistics.OverallStatisticsDTO;
 import com.reading.ms_sessions.service.StatisticsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

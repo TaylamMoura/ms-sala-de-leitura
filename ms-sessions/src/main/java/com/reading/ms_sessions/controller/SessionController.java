@@ -1,8 +1,8 @@
 package com.reading.ms_sessions.controller;
 
-import com.reading.ms_sessions.dto.EndSessionDTO;
-import com.reading.ms_sessions.dto.SessionDTO;
-import com.reading.ms_sessions.dto.StartSessionDTO;
+import com.reading.ms_sessions.dto.session.EndSessionDTO;
+import com.reading.ms_sessions.dto.session.SessionDTO;
+import com.reading.ms_sessions.dto.session.StartSessionDTO;
 import com.reading.ms_sessions.entity.ReadingSession;
 import com.reading.ms_sessions.repository.SessionsRepository;
 import com.reading.ms_sessions.service.SessionService;

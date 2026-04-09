@@ -1,4 +1,4 @@
-package com.reading.ms_sessions.service;
+package com.reading.ms_sessions.client;
 
 import com.reading.ms_sessions.dto.BookDTO;
 import org.springframework.cloud.openfeign.FeignClient;

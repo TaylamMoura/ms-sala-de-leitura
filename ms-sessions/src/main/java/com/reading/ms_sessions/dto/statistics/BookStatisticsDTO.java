@@ -1,4 +1,4 @@
-package com.reading.ms_sessions.dto;
+package com.reading.ms_sessions.dto.statistics;
 
 
 public record BookStatisticsDTO(

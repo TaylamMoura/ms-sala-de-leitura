@@ -1,4 +1,4 @@
-package com.reading.ms_sessions.dto;
+package com.reading.ms_sessions.dto.statistics;
 
 
 import java.util.List;

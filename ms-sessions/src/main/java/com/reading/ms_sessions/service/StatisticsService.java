@@ -1,7 +1,12 @@
 
 package com.reading.ms_sessions.service;
 
+import com.reading.ms_sessions.client.CatalogClient;
 import com.reading.ms_sessions.dto.*;
+import com.reading.ms_sessions.dto.statistics.BookRankingDTO;
+import com.reading.ms_sessions.dto.statistics.BookStatisticsDTO;
+import com.reading.ms_sessions.dto.statistics.CountryRankingDTO;
+import com.reading.ms_sessions.dto.statistics.OverallStatisticsDTO;
 import com.reading.ms_sessions.repository.StatisticsRepository;
 
 import java.time.LocalTime;
