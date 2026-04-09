@@ -132,13 +132,15 @@
 </div>
 
 <script>
+    //Cria um fundo infinito de capas: embaralha as imagens disponíveis e as repete para preencher o mosaico visual.
+    //--------------------------------------------------------------------------------------------------------------
+
     const fundoMosaico = document.getElementById('fundo-mosaico');
     const totalCapas = 66;
     const repeticoes = 6;
 
     let listaCapas = Array.from({ length: totalCapas }, (_, i) => i + 1);
 
-    // 2. Função para embaralhar a lista (Algoritmo Fisher-Yates)
     function embaralhar(lista) {
         for (let i = lista.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
@@ -147,7 +149,7 @@
         return lista;
     }
 
-    // 3. Geramos o mosaico com a ordem aleatória
+
     for (let i = 0; i < repeticoes; i++) {
         // Embaralhamos a lista a cada repetição para ficar bem randômico
         const capasAleatorias = embaralhar([...listaCapas]);

@@ -101,29 +101,21 @@
 
 <script>
     document.addEventListener("DOMContentLoaded", () => {
-        // 1. Pega os parâmetros da URL (enviados pela página anterior)
         const params = new URLSearchParams(window.location.search);
 
         const bookId = params.get('bookId');
         const tempo = params.get('tempo') || "00:00";
         const paginaFinal = params.get('pagina') || "0";
 
-        // 2. Preenche os dados na tela
         document.getElementById('tempoSessao').textContent = tempo;
         document.getElementById('paginasLidas').textContent = paginaFinal;
 
-        // 3. Configura o botão de voltar com o bookId correto
         const btnContinuar = document.getElementById('btnContinuar');
         if (bookId) {
-            // Ajuste aqui para o nome exato da sua página de detalhes (livro-detalhes.html ou meu-detalhes.html)
             btnContinuar.href = `livro-detalhes.html?bookId=${bookId}`;
         } else {
             btnContinuar.href = 'home.html';
         }
-
-        // 4. Busca a capa do livro (opcional, mas deixa lindo)
-        // Se você quiser que a capa apareça, podemos usar o bookId para buscar no catalog
-        // Ou, se preferir não fazer outra requisição, podemos passar a URL da capa na URL também!
         if (bookId) {
             buscarCapaResumo(bookId);
         }
