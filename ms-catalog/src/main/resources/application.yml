@@ -63,3 +63,17 @@ google:
 
 jwt:
   secret: ${JWT_SECRET}
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+  openapi:
+    info:
+      title: Serviço de Catálogo (ms-catalog)
+      description: API para gerenciamento de livros
+      version: 1.0.0
+    servers:
+      - url: http://localhost:8080
+        description: Gateway Server
