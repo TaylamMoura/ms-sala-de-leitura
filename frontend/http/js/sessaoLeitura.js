@@ -221,3 +221,16 @@ async function exibirCapaLivro() {
     }
 }
 
+
+function voltarParaDetalhes(event) {
+    event.preventDefault(); // Impede o link de recarregar a página antes da hora
+
+    if (livroId) {
+        // Redireciona passando o ID que já temos na variável global livroId
+        window.location.href = `livro-detalhes.html?bookId=${livroId}`;
+    } else {
+        // Caso ocorra algum erro e não tenha ID, volta para a estante principal
+        window.location.href = 'home.html';
+    }
+}
+
