@@ -26,5 +26,4 @@ public record BookDTO(
                 lastPage
         );
     }
-
 }

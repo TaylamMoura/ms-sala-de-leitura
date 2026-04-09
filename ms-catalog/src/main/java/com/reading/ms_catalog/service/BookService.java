@@ -123,6 +123,7 @@ public class BookService {
         return book;
     }
 
+
     @Transactional
     public void markAsFinished(Long bookId, Long userId){
         Book book = repository.findByBookIdAndUserId(bookId, userId)
@@ -138,6 +139,7 @@ public class BookService {
                 .orElseThrow(()-> new RuntimeException("Livro não encontrado"));
         return new BookDTO(book, null);
     }
+
 
     public int getTotalFinishedBooks(Long userId) {
         return  repository.countByUserIdAndFinishedTrue(userId);

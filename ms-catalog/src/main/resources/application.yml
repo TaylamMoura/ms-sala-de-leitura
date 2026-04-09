@@ -2,9 +2,6 @@ server:
   port: 8082 # Porta dedicada para o MS-Catalog
   address: 0.0.0.0
 
-# ===============================================
-# CONFIGURAÇÃO SPRING (Geral e BD)
-# ===============================================
 spring:
   application:
     name: ms-catalog
@@ -16,7 +13,6 @@ spring:
     consul:
       host: localhost
       port: 8500
-
       discovery:
         enabled: true
         register: true
@@ -27,10 +23,6 @@ spring:
         register-health-check: true
 
   datasource:
-    # A URL aponta para o BD ms_catalog
-    #url: jdbc:postgresql://localhost:5432/ms_catalog
-    #username: user_ms
-    #password: mssala
     url: ${DB_URL}
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD_POSTGRES}

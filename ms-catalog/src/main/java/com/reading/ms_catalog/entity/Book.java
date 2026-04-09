@@ -22,7 +22,9 @@ public class Book {
     private Long bookId;
 
     private String title;
+
     private String author;
+
     private int pages;
 
     @Column(name = "cover_url")
