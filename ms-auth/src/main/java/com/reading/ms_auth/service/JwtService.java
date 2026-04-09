@@ -1,4 +1,4 @@
-package com.reading.ms_auth.security;
+package com.reading.ms_auth.service;
 
 import com.reading.ms_auth.entity.User;
 import io.jsonwebtoken.Claims;

@@ -4,7 +4,7 @@ import com.reading.ms_auth.dto.UserRegisterDTO;
 import com.reading.ms_auth.dto.UserLoginDTO;
 import com.reading.ms_auth.dto.NameResponseDTO;
 import com.reading.ms_auth.entity.User;
-import com.reading.ms_auth.security.JwtService;
+import com.reading.ms_auth.service.JwtService;
 import com.reading.ms_auth.service.UserService;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.HttpServletResponse;

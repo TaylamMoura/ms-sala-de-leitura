@@ -1,6 +1,8 @@
-package com.reading.ms_auth.security;
+package com.reading.ms_auth.config;
 
 
+import com.reading.ms_auth.security.JWTAuthenticationFilter;
+import com.reading.ms_auth.service.JwtService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
