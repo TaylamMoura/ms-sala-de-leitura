@@ -55,3 +55,18 @@ auth:
   service:
     name: ms-auth
     path: /usuarios
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+  api-docs:
+    path: /v3/api-docs
+  openapi:
+    info:
+      title: Serviço de Autenticação (ms-auth)
+      description: API para gestão de usuários e geração de tokens JWT.
+      version: 1.0.0
+    # ADICIONE AQUI:
+    servers:
+      - url: http://localhost:8080
+        description: Gateway Server
