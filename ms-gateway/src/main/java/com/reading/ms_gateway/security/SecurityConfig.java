@@ -40,6 +40,15 @@ public class SecurityConfig {
                         .pathMatchers(HttpMethod.POST, "/usuarios").permitAll()
                         .pathMatchers("/usuarios/login", "/usuarios/login/**").permitAll()
                         .pathMatchers("/actuator/**", "/auth/**").permitAll()
+                        .pathMatchers("/swagger-ui.html",
+                                "/swagger-ui/**",
+                                "/v3/api-docs/**",
+                                "/webjars/**").permitAll()
+                        .pathMatchers(
+                                "/ms-auth/v3/api-docs/**",
+                                "/ms-catalog/v3/api-docs/**",
+                                "/ms-sessions/v3/api-docs/**"
+                        ).permitAll()
                         .anyExchange().authenticated()
                 )
                 // 4. Garante que o filtro de JWT só rode após a autenticação básica e CORS

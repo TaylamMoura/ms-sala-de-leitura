@@ -22,15 +22,15 @@ spring:
         - id: ms-auth
           uri: lb://ms-auth
           predicates:
-            - Path=/usuarios/**
+            - Path=/usuarios/**, /ms-auth/v3/api-docs/**
         - id: ms-catalog
           uri: lb://ms-catalog
           predicates:
-            - Path=/livros/**
+            - Path=/livros/**, /ms-catalog/v3/api-docs/**
         - id: ms-sessions
           uri: lb://ms-sessions
           predicates:
-            - Path=/sessao-leitura/**, /estatisticas/**
+            - Path=/sessao-leitura/**, /estatisticas/**, /ms-sessions/v3/api-docs/**
 
 
 management:
@@ -44,6 +44,19 @@ management:
 
 jwt:
   secret: ${JWT_SECRET}
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    # Aqui você cria um "agregador" para ver todos os MS em um menu suspenso
+    urls:
+      - name: Autenticação (ms-auth)
+        url: /ms-auth/v3/api-docs
+      - name: Catálogo (ms-catalog)
+        url: /ms-catalog/v3/api-docs
+      - name: Sessões (ms-sessions)
+        url: /ms-sessions/v3/api-docs
+
 ---
 spring:
   config:
