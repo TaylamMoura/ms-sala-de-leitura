@@ -18,10 +18,10 @@ public interface CatalogClient {
     List<BookDTO> listSavedBooks();
 
     // Contar quantos livros finalizados o usuário tem
-    @GetMapping("/livros/count-finished/{userId}")
-    int countFinishedBooks(@PathVariable("userId") Long userId);
+    @GetMapping("/livros/contar-finalizados")
+    int countFinishedBooks();
 
     //Marcar livro como finalizado
-    @PutMapping("/livros/{bookId}/finalizar/{userId}")
-    void markAsFinished(@PathVariable("bookId") Long bookId, @PathVariable("userId") Long userId);
+    @PutMapping("/livros/{bookId}/finalizar")
+    void markAsFinished(@PathVariable("bookId") Long bookId);
 }

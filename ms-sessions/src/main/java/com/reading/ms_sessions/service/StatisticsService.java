@@ -26,6 +26,8 @@ public class StatisticsService {
     //GERA ESTATÍSTICAS GERAIS DE TODOS LIVROS LIDOS PELO USUÁRIO
     public OverallStatisticsDTO overallStatistics(Long userId) {
 
+        int totalBookRead = catalogClient.countFinishedBooks();
+
         // Busca livros e garante que não venha nulo
         List<BookDTO> allBooks = catalogClient.listSavedBooks();
         if (allBooks == null) allBooks = List.of();
