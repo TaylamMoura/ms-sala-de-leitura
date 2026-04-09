@@ -11,10 +11,4 @@ public interface SessionsRepository extends JpaRepository<ReadingSession, Long> 
     //Busca a última sessão de leitura por user e book
     Optional<ReadingSession> findTopByUserIdAndBookIdOrderByEndTimeDesc(Long userId, Long bookId);
 
-    //Busca a última sessão de leitura registrada para um determinado livro
-    Optional<ReadingSession> findTopByBookIdOrderByEndTimeDesc(Long bookId);
-
-    //Busca a sessão mais recente iniciada por um usuário em um determinado livro
-    Optional<ReadingSession> findTopByUserIdAndBookIdOrderByStartTimeDesc(Long userId, Long bookId);
-
 }
