@@ -25,17 +25,13 @@ public class SecurityConfig {
         jwtFilter.setServerAuthenticationConverter(new ServerBearerTokenAuthenticationConverter());
 
         return http
-                // 1. Desabilita o CSRF (essencial para POST de outras origens)
                 .csrf(ServerHttpSecurity.CsrfSpec::disable)
-
-                // 2. Ativa o suporte a CORS usando o bean abaixo
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
 
                 .formLogin(ServerHttpSecurity.FormLoginSpec::disable)
                 .httpBasic(ServerHttpSecurity.HttpBasicSpec::disable)
 
                 .authorizeExchange(exchanges -> exchanges
-                        // 3. LIBERA O OPTIONS TOTALMENTE
                         .pathMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .pathMatchers(HttpMethod.POST, "/usuarios").permitAll()
                         .pathMatchers("/usuarios/login", "/usuarios/login/**").permitAll()
@@ -51,7 +47,6 @@ public class SecurityConfig {
                         ).permitAll()
                         .anyExchange().authenticated()
                 )
-                // 4. Garante que o filtro de JWT só rode após a autenticação básica e CORS
                 .addFilterAt(jwtFilter, SecurityWebFiltersOrder.AUTHENTICATION)
                 .build();
     }
@@ -60,7 +55,7 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
-        config.addAllowedOrigin("http://localhost:8085"); // URL do seu Front
+        config.addAllowedOrigin("http://localhost:8085"); // URL do Frontend
         config.addAllowedHeader("*");
         config.addAllowedMethod("*");
 
@@ -69,7 +64,3 @@ public class SecurityConfig {
         return source;
     }
 }
-
-/* Define quais sao as rotas publicas e as autenticadas
-Registra o AuthenticationWebFilter, que vai chaar o converter e o manager para validar o jwt
- */

@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
+// Filtro global que extrai o ID do usuário do Token JWT e o repassa para os microserviços via Header.
 @Component
 public class UserIdFilter implements GlobalFilter, Ordered {
 

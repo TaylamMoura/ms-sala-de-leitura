@@ -13,6 +13,7 @@ import reactor.core.publisher.Mono;
 
 import java.util.List;
 
+// Valida o token e cria o objeto de autenticação do usuário utilizando o JwtService.
 @Component
 public class JwtReactiveAuthenticationManager implements ReactiveAuthenticationManager {
 
@@ -43,7 +44,3 @@ public class JwtReactiveAuthenticationManager implements ReactiveAuthenticationM
                 });
     }
 }
-
-/* Função desta classe: validar token e criar usuário autenticado
-usa o JwtService para verificar a validade do token
- */

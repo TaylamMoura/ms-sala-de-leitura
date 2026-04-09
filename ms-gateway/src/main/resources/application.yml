@@ -48,7 +48,6 @@ jwt:
 springdoc:
   swagger-ui:
     path: /swagger-ui.html
-    # Aqui você cria um "agregador" para ver todos os MS em um menu suspenso
     urls:
       - name: Autenticação (ms-auth)
         url: /ms-auth/v3/api-docs
